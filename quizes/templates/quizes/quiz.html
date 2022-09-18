@@ -1,0 +1,186 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<!-- Main Section -->
+<main class="singlePost my-md">
+    <div class="container">
+{#        <div class="layout">#}
+
+                <div class="row">
+                    <div class="col">
+                        <b>{{obj.name}}</b>
+{#                        <p>score to pass: {{obj.required_score_to_pass}}%</p>#}
+                    </div>
+
+                    <div class="col text-right" id="timer-box"></div>
+
+                </div>
+
+                <a href="{% url 'main_view' %}" class="btn btn-danger">go back</a>
+
+                <form id="quiz-form" class="mt-3 mb-3">
+                    {% csrf_token %}
+
+                    <div id="quiz-box"></div>
+
+                    <button type="submit" class="btn btn-primary mt-3">save</button>
+                </form>
+
+                <div id="score-box"></div>
+
+                <div id="result-box"></div>
+
+{#            </div>#}
+        </div>
+{#    </div>#}
+{#    </div>#}
+</main>
+<script>
+const url = window.location.href
+
+const quizBox = document.getElementById('quiz-box')
+const scoreBox = document.getElementById('score-box')
+const resultBox = document.getElementById('result-box')
+const timerBox = document.getElementById('timer-box')
+
+
+const activateTimer = (time) => {
+    if (time.toString().length < 2) {
+        timerBox.innerHTML = `<b>0${time}:00</b>`
+    } else {
+        timerBox.innerHTML = `<b>${time}:00</b>`
+    }
+
+    let minutes = time - 1
+    let seconds = 60
+    let displaySeconds
+    let displayMinutes
+
+    const timer = setInterval(()=>{
+        seconds --
+        if (seconds < 0) {
+            seconds = 59
+            minutes --
+        }
+        if (minutes.toString().length < 2) {
+            displayMinutes = '0'+minutes
+        } else {
+            displayMinutes = minutes
+        }
+        if(seconds.toString().length < 2) {
+            displaySeconds = '0' + seconds
+        } else {
+            displaySeconds = seconds
+        }
+        if (minutes === 0 && seconds === 0) {
+            timerBox.innerHTML = "<b>00:00</b>"
+            setTimeout(()=>{
+                clearInterval(timer)
+                {#alert('Time over')#}
+                sendData()
+            }, 500)
+        }
+
+        timerBox.innerHTML = `<b>${displayMinutes}:${displaySeconds}</b>`
+    }, 1000)
+    quizForm.addEventListener('submit', e=>{
+        e.preventDefault()
+        clearInterval(timer)
+        sendData()
+    })
+}
+
+$.ajax({
+    type: 'GET',
+    url: `${url}data`,
+    success: function(response){
+        const data = response.data
+        data.forEach(el => {
+            for (const [question, answers] of Object.entries(el)){
+
+                quizBox.innerHTML += `
+                    <hr>
+                    <div class="mb-2">
+                        <b>${question}</b>
+                    </div>
+                `
+                if(answers[0] == 'written'){
+                    quizBox.innerHTML += `
+                        <div>
+                            <textarea class="written" id="ans" name="${question}" rows="4" cols="50"></textarea>
+                        </div>
+                `
+                }else{
+                    answers[1].forEach(answer=>{
+                        quizBox.innerHTML += `
+                            <div>
+                                <input type="checkbox" class="mcq" id="${question}-${answer}" name="${question}" value="${answer}">
+                                <label for="${question}">${answer}</label>
+                            </div>
+                `
+                    })
+                }
+            }
+        });
+        activateTimer(response.time)
+
+    },
+    error: function(error){
+        console.log(error)
+    }
+})
+{#let values=[]#}
+{#const mcqAns2 = [...document.getElementsByClassName('mcq')]#}
+{#mcqAns2.forEach(el=>{#}
+{#        let values=[]#}
+{#        if (el.checked) {#}
+{#            values += el.value#}
+{##}
+{#    }})#}
+{#console.log(values)#}
+console.log('gggggggggggggggggggggggggggggggggg')
+const quizForm = document.getElementById('quiz-form')
+const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+const sendData = () => {
+    const mcqAns = [...document.getElementsByClassName('mcq')]
+    const writtenAns = [...document.getElementsByClassName('written')]
+    const data = {}
+    data['csrfmiddlewaretoken'] = csrf[0].value
+    let values=[]
+    let quizNameHelper=new Set()
+    mcqAns.forEach(el=>{
+
+        if (el.checked) {
+            if(!quizNameHelper.has(el.name))
+                values=[]
+            quizNameHelper.add(el.name)
+            values += el.value+","
+
+            data[el.name] = values
+
+        } else {
+            if (!data[el.name]) {
+                data[el.name] = null
+            }
+        }
+    })
+    writtenAns.forEach(el=>{
+        data[el.name] = el.value
+    })
+    $.ajax({
+        type: 'POST',
+        url: `${url}save/`,
+        data: data,
+        success: function(response){
+            window.location.href = 'http://127.0.0.1:8000/quizes/'
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
+}
+console.log('hello world quiz')
+</script>
+{% endblock %}

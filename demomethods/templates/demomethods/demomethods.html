@@ -1,0 +1,70 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+<!-- Main Section -->
+<main class="demomethods">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>وسائل الايضاح</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'demomethods' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Demomethods </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Demomethod Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Search Result: DevList -->
+    <section class="demomethodsList">
+        <div class="container">
+            <div class="grid grid--three">
+
+                {% for demomethod in demomethods %}
+                <div class="column">
+                    <div class="card demomethod">
+                        <a href="{% url 'demomethod' demomethod.id %}" class="demomethod">
+                            <img class="demomethod__thumbnail" src="{{demomethod.imageURL}}" alt="demomethod thumbnail" />
+                            <div class="card__body">
+                                <h3 class="demomethod__title">{{demomethod.title}}</h3>
+                                <p><a class="demomethod__author" href="{% url 'user-profile' demomethod.owner.id %}">By
+                                        {{demomethod.owner.name}}</a>
+                                </p>
+{#                                <p class="demomethod--rating">#}
+{#                                    <span style="font-weight: bold;">{{demomethod.vote_ratio}}%</span> Positive#}
+{#                                    Feedback ({{demomethod.vote_total}}) Vote{{demomethod.vote_total|pluralize:"s"}}#}
+{#                                </p>#}
+                                <div class="demomethod__tags">
+                                    {% for tag in demomethod.tags.all %}
+                                    <span class="tag tag--pill tag--main">
+                                        <small>{{tag}}</small>
+                                    </span>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=demomethods custom_range=custom_range %}
+
+</main>
+
+
+
+
+{% endblock %}

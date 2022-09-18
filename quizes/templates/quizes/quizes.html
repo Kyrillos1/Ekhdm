@@ -1,0 +1,146 @@
+
+
+
+{% extends 'main.html' %}
+
+{% block content %}
+    <style>
+    .block {
+  display: block;
+  width: 100%;
+  {#border: none;#}
+  {#background-color: #04AA6D;#}
+  padding: 14px 28px !important;
+  margin-top: 14px !important;
+  font-size: 16px;
+  {#cursor: pointer;#}
+  text-align: center;
+}
+    </style>
+<!-- Main Section -->
+{#    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">#}
+
+<main class="posts">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>quizes</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'main_view' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Quizes </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Post Title" value="{{search_query}}" />
+                    </div>
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="grid ">
+        {% for obj in quizes %}
+            <button
+                class="btn btn-outline-primary modal-button block"
+                data-pk="{{obj.id}}"
+                data-name="{{obj.name}}"
+{#                data-topic="{{obj.topic}}"#}
+                data-time="{{obj.time}}"
+                data-desc="{{obj.desc|linebreaksbr}}"
+                data-date="{{obj.date}}"
+                data-valid="{{obj.valid}}"
+                {% for result in obj.result_set.all %}
+                    {% if result.user == request.user.profile %}
+                        data-score="{{result.score}}"
+                    {% endif %}
+                {%  endfor %}
+                data-toggle="modal"
+                data-target="#quizStartModal">
+                {{obj.name}}
+            </button>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="modal fade" id="quizStartModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modal-body-confirm"></div>
+          <div class="modal-footer" id="buttonDiv">
+{#            <button type="button" class="btn btn-danger" data-dismiss="modal">no</button>#}
+{#            <button type="button" id="start-button" class="btn btn-success">yes</button>#}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'pagination.html' with queryset=posts custom_range=custom_range %}
+</main>
+<script>
+    {#console.log('hello world')#}
+
+const modalBtns = [...document.getElementsByClassName('modal-button')]
+const modalBody = document.getElementById('modal-body-confirm')
+const startBtn = document.getElementById('start-button')
+const url = window.location.href
+const QuizName = document.getElementById('exampleModalLabel')
+modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+    const pk = modalBtn.getAttribute('data-pk')
+    const name = modalBtn.getAttribute('data-name')
+    const time = modalBtn.getAttribute('data-time')
+    const desc = modalBtn.getAttribute('data-desc')
+    const date = modalBtn.getAttribute('data-date')
+    const valid = modalBtn.getAttribute('data-valid')
+    const score = modalBtn.getAttribute('data-score')
+    const buttonDiv = document.getElementById('buttonDiv')
+
+
+    QuizName.innerHTML=`${name} Quiz`
+    if(score != null){
+            modalBody.innerHTML = `</b>
+            <div class="text-muted">
+                Result is ${score}
+            </div>`
+        buttonDiv.innerHTML = ``
+    }else {
+        if (valid == 'True') {
+            modalBody.innerHTML = `
+            <div class="h5 mb-3">Are you sure you want to begin "<b>${name}</b>"?</div>
+            <div class="text-muted">
+                <ul>
+{#                    <li>About: <b>${topic}</b></li>#}
+                    <li>Details: <b>${desc}</b></li>
+                    <li>time: <b>${time} min</b></li>
+                    <li>date: <b>${date}</b></li>
+                </ul>
+            </div>
+        `
+            buttonDiv.innerHTML = `<button type="button" class="btn btn-danger" data-dismiss="modal">no</button>
+                <button type="button" id="start-button" class="btn btn-success start-button">yes</button>
+        `
+
+        } else {
+            modalBody.innerHTML = `</b>
+            <div class="text-muted">
+                Quiz is not Valid now
+            </div>`
+            buttonDiv.innerHTML = ``
+        }
+    }
+    document.addEventListener('click', (e)=>{
+        if (e.target.className=='btn btn-success start-button'){
+            window.location.href = url + pk
+            {#console.log(e.target)#}
+        }
+    })
+}))
+
+</script>
+
+{% endblock %}

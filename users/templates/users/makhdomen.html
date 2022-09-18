@@ -1,0 +1,117 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<!-- Main Section -->
+<main class="home">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>ابحث عن المخدومين</h2>
+            </div>
+
+            <div class="hero-section__search">
+
+                <form id="searchForm" class="form" action="{% url 'makhdomen' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search Developers </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            value="{{search_query}}" placeholder="Search by developer name" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+
+            </div>
+        </div>
+    </section>
+    <!-- Search Result: DevList -->
+    <section class="devlist">
+        <div class="container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">User Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Facebook</th>
+                  <th scope="col">Job</th>
+                  <th scope="col">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for makhdom,note in twoLists %}
+                      <tr class='clickable-row'>
+                  <th scope="row" ><a href="{% url 'user-profile' makhdom.id %}" ><img height=100 width="100" src="{{makhdom.imageURL}}"/></a> </th>
+                  <td>{{ makhdom.name }}</td>
+                  <td>{{ makhdom.username }}</td>
+                  <td>{{ makhdom.email }}</td>
+                  <td>{{ makhdom.social_facebook }}</td>
+                  <td>{{ makhdom.job }}</td>
+                  <td>
+                      <button
+                        class="btn btn-outline-primary modal-button block"
+                        data-toggle="modal"
+                        data-target="#quizStartModal"
+
+
+
+                        {% for key, value in note.items %}
+                        data-{{ key }}="{{ value }}"
+                         {% endfor %}
+
+                        data-name="{{ makhdom.name }}"
+                        >
+                        Note Percentage
+                      </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </section>
+    <div class="modal fade" id="quizStartModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modal-body-confirm"></div>
+          <div class="modal-footer" id="buttonDiv">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'pagination.html' with queryset=profiles custom_range=custom_range %}
+</main>
+<script>
+const modalBtns = [...document.getElementsByClassName('modal-button')]
+const modalBody = document.getElementById('modal-body-confirm')
+{#const url = window.location.href#}
+const modelTitle = document.getElementById('exampleModalLabel')
+modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+    const am = modalBtn.getAttribute('data-am')
+    const pm = modalBtn.getAttribute('data-pm')
+    const read_bible = modalBtn.getAttribute('data-read_bible')
+    const liturgy = modalBtn.getAttribute('data-liturgy')
+    const holy_communion = modalBtn.getAttribute('data-holy_communion')
+    const name = modalBtn.getAttribute('data-name')
+modelTitle.innerHTML=`Note Percentage For ${name}`
+    modalBody.innerHTML = `
+            <div class="text-muted">
+                <ul>
+                    <li>Am Percentage: <b>${am}%</b></li>
+                    <li>Am Percentage: <b>${pm}%</b></li>
+                    <li>Read Bible Percentage: <b>${read_bible}%</b></li>
+                    <li>Liturgy Percentage: <b>${liturgy}%</b></li>
+                    <li>Holy Communion Percentage: <b>${holy_communion}%</b></li>
+                </ul>
+            </div>`
+    }))
+</script>
+{% endblock content %}

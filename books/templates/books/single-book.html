@@ -1,0 +1,90 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<!-- Main Section -->
+<main class="singleBook my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+{#                <h3 class="singleBook__subtitle">Tools & Stacks</h3>#}
+{#                <div class="singleBook__toolStack">#}
+{#                    {% for tag in book.tags.all %}#}
+{#                    <span class="tag tag--pill tag--sub tag--lg">#}
+{#                        <small>{{tag}}</small>#}
+{#                    </span>#}
+{#                    {% endfor %}#}
+{##}
+{#                </div>#}
+
+{#                {% if book.source_link %}#}
+{#                <a class="singleBook__liveLink" href="{{book.source_link}}" target="_blank"><i#}
+{#                        class="im im-external-link"></i>Source#}
+{#                    Code#}
+{#                </a>#}
+{#                {% endif %}#}
+
+{#                {% if book.demo_link %}#}
+{#                <a class="singleBook__liveLink" href="{{book.source_link}}" target="_blank"><i#}
+{#                        class="im im-external-link"></i>Live Demo#}
+{##}
+{#                </a>#}
+{#                {% endif %}#}
+
+            </div>
+            <div class="column column--2of3">
+                <a class="singleBook__preview" href="{{ book.bookURL }}" alt="portfolio thumbnail" > Download</a>
+                <a href="{% url 'user-profile' book.user.id  %}"
+                    class="singleBook__member">{{book.user.name}}</a>
+                <div class="singleBook__info">
+                    {{book.desc|linebreaksbr}}
+                </div>
+                <div class="comments">
+                    <h3 class="singleBook__subtitle">Feedback</h3>
+                    <h5 class="book--rating">
+{#                        {{book.vote_ratio}}% Positive Feedback ({{book.vote_total}}#}
+{#                        Vote{{book.vote_total|pluralize:"s"}})#}
+                    </h5>
+
+
+                    {% if request.user.is_authenticated %}
+                    <form class="form" action="{% url 'book' book.id %}" method="POST">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form__field">
+                            <label for="formInput#textarea">{{field.label}}</label>
+                            {{field}}
+                        </div>
+                        {% endfor %}
+                        <input class="btn btn--sub btn--lg" type="submit" value="Add Comment" />
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{request.path}}">Please login to leave a comment</a>
+                    {% endif %}
+
+                    <div class="commentList">
+                        {% for comment in book.comment_set.all %}
+                        {% if comment.body %}
+                        <div class="comment">
+                            <a href="{% url 'user-profile' comment.user.id  %}">
+                                <img class="avatar avatar--md" src="{{comment.user.profile_image.url}}" alt="user" />
+                            </a>
+                            <div class="comment__details">
+                                <a href="{% url 'user-profile' comment.user.id  %}"
+                                    class="comment__author">{{comment.user.name}}</a>
+                                <p class="comment__info">{{comment.desc|linebreaksbr}}</p>
+                                <p class="comment__info">{{comment.created|linebreaksbr}}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</main>
+
+{% endblock %}

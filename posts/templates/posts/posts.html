@@ -1,0 +1,101 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+<!-- Main Section -->
+<main class="posts">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Posts</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'posts' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Posts </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Post Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Result: DevList -->
+    <section class="postsList">
+    <div class="container">
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Posts</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-post' %}"><i
+              class="im im-plus"></i> Add Post</a>
+        </div>
+    </div>
+
+        <div class="container">
+            <div class="grid ">
+
+                {% for post in posts %}
+                <div class="column ">
+                    <div class="card post">
+                        <a href="{% url 'post' post.id %}" class="post ">
+                            <img class="post__thumbnail " src="{{post.imageURL}}" alt="post thumbnail" />
+                            <div class="card__body">
+                                <h3 class="post__title">{{post.user}}</h3>
+                                <p><a class="post__author" href="{% url 'user-profile' post.user.id %}">By
+                                        {{post.user.name}}</a>
+                                </p>
+{#                                <p class="post--rating">#}
+{#                                    <span style="font-weight: bold;">{{post.vote_ratio}}%</span> Positive#}
+{#                                    Feedback ({{post.vote_total}}) Vote{{post.vote_total|pluralize:"s"}}#}
+{#                                </p>#}
+
+                            </div>
+                        </a>
+                        {% if post.user.id == request.user.profile.id %}
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-post' post.id %}?next=/account">
+                                <i class="im im-x-mark-circle-o"></i>
+                                Delete
+                            </a>
+                        {% endif %}
+
+                    </div>
+                <div class="right floated">
+                    <form action="{% url 'like-post-view' %}" method="POST" class='like-form' id='{{post.id}}'>
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value={{post.id}}>
+
+                            <button type="submit" class="ui button like-btn{{post.id}}">
+                                {% if profile not in post.liked.all %}
+                                    Like
+                                {% else %}
+                                    Unlike
+                                {% endif %}
+                            </button>
+                            <div class="ui grid">
+                                <div class="column">
+                                    <div class="like-count{{post.id}}"> {{post.num_likes}} </div>
+                                </div>
+                                <div class="column">
+                                    likes
+                                </div>
+                            </div>
+                    </form>
+                </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=posts custom_range=custom_range %}
+
+</main>
+
+
+
+
+{% endblock %}

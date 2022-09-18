@@ -1,0 +1,43 @@
+{% load static %}
+
+<!-- Header Section -->
+<header class="header">
+    <div class="container container--narrow">
+        <a href="{% url 'posts' %}" class="header__logo">
+{#            <img src="{% static 'images/logo.svg' %} " alt="Ekhdm Logo" />#}
+{#            Home#}
+        </a>
+
+        <nav class="header__nav">
+            <input type="checkbox" id="responsive-menu" />
+            <label for="responsive-menu" class="toggle-menu">
+                <span>Menu</span>
+                <div class="toggle-menu__lines"></div>
+            </label>
+            <ul class="header__menu">
+{#                <li class="header__menuItem"><a href="{% url 'profiles' %}">Developers</a></li>#}
+                <li class="header__menuItem"><a href="{% url 'demomethods' %}">وسائل الايضاح</a></li>
+                <li class="header__menuItem"><a href="{% url 'books' %}">Books</a></li>
+
+                {% if request.user.is_authenticated %}
+                    <li class="header__menuItem"><a href="{% url 'tasks' %}">Tasks</a></li>
+
+                    {% if request.user.groups.all.0.name == 'MakhdomE3dad'%}
+                        <li class="header__menuItem"><a href="{% url 'main_view' %}">Quizes</a></li>
+                        <li class="header__menuItem"><a href="{% url 'note' %}">Add Note</a></li>
+                    {% endif %}
+                    {% if request.user.groups.all.0.name == 'KhadmE3dad'%}
+                        <li class="header__menuItem"><a href="{% url 'makhdomen' %}">مخدومين</a></li>
+                    {% endif %}
+
+                    <li class="header__menuItem"><a href="{% url 'inbox' %}">Inbox</a></li>
+                    <li class="header__menuItem"><a href="{% url 'account' %}">Account</a></li>
+                    <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Logout</a></li>
+                    {% else %}
+
+                    <li class="header__menuItem"><a href="{% url 'login' %}" class="btn btn--sub">Login/Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>

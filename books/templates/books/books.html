@@ -1,0 +1,128 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+<!-- Main Section -->
+<main class="books">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Books</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'books' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Books </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Book Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Result: DevList -->
+    <section class="booksList">
+    <div class="container">
+        <br>
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Books</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-book' %}"><i
+              class="im im-plus"></i> Add Book</a>
+        </div>
+        <br>
+    </div>
+
+        <div class="container">
+            <div class="grid ">
+<table class="table table-hover">
+              <thead>
+                <tr>
+{#                  <th scope="col">#</th>#}
+                  <th scope="col">Title</th>
+                  <th scope="col">Writer</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Desc</th>
+                  <th scope="col">Added by</th>
+                  <th scope="col">Get The book</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for book in books %}
+{#          {% if makhdom.user.groups.all.0.name == 'MakhdomE3dad' %}#}
+                      <tr class='clickable-row'>
+                  <td>{{book.name}}</td>
+                  <td>{{book.writer}}</td>
+                  <td>
+                      <span class="tag tag--pill tag--main">
+                        <small>{{book.type}}</small>
+                      </span>
+                  </td>
+                  <td>{{book.desc|linebreaksbr|slice:"20"}}</td>
+                  <td>{{ book.user.name }}</td>
+                  <td>
+                      <a class="singleBook__preview" href="{{ book.bookURL }}" alt="portfolio thumbnail" > Download</a>
+                  </td>
+                          {% if book.user.id == request.user.profile.id %}
+
+                  <td> <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'update-book' book.id %}">
+{#                      <i class="im im-plus"></i> #}
+                      Update Book</a>
+                  </td>
+
+                        {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+{#                {% for book in books %}#}
+{#                <div class="column ">#}
+{#                    <div class="card book">#}
+{#                           <a href="{% url 'book' book.id %}" class="book ">#}
+{##}
+{#                            <div class="card__body">#}
+{#                                <h3 class="book__title">{{book.name}}</h3>#}
+{#                                <p>By {{book.writer}}#}
+{#                                </p>#}
+{#                                <span class="tag tag--pill tag--main">#}
+{#                                        <small>{{book.type}}</small>#}
+{#                                    </span>#}
+{#                                <p class="book--rating">#}
+{#                                    {{book.desc|linebreaksbr}}#}
+{#                                </p>#}
+{#                                <p class="book--rating">#}
+{#                                    Added by {{book.user.name}}#}
+{#                                </p>#}
+{##}
+{#                            </div>#}
+{#                        </a>#}
+{#                        {% if book.user.id == request.user.profile.id %}#}
+{#                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-book' book.id %}?next=/account">#}
+{#                                <i class="im im-x-mark-circle-o"></i>#}
+{#                                Delete#}
+{#                            </a>#}
+{#                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-book' book.id %}"><i#}
+{#                                                  class="im im-edit"></i> Edit</a>#}
+{#                        {% endif %}#}
+{##}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#                {% endfor %}#}
+
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=books custom_range=custom_range %}
+
+</main>
+
+
+
+
+{% endblock %}

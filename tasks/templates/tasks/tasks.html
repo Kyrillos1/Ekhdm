@@ -1,0 +1,102 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}</style>
+
+<!-- Main Section -->
+<main class="tasks">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Tasks</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'tasks' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Tasks </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Task Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Result: DevList -->
+    <section class="tasksList">
+<br>
+{% if request.user.groups.all.0.name == 'KhadmE3dad'%}
+       <div class="container">
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Tasks</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-task' %}"><i
+              class="im im-plus"></i> Add Task</a>
+        </div>
+    </div>
+{% endif %}
+
+<br>
+        <div class="container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">BY</th>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Desc</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for task in tasks %}
+                      <tr class='clickable-row'>
+                        <td>{{ task.user.name }}</td>
+                        <td>{{ task.subject }}</td>
+                        <td title="{{ task.desc}}">{{ task.desc|slice:"150" }}</td>
+                        <td>{{ task.deadline }}</td>
+                        <td>
+                        {% if request.user.groups.all.0.name == 'MakhdomE3dad' %}
+                            <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'submit-task' task.id %}"><i
+                            class="im im-plus"></i> Submit</a>
+                        {% elif request.user.groups.all.0.name == 'KhadmE3dad' %}
+                            <div class="dropdown">
+                                <span>Mouse over me</span>
+                                <div class="dropdown-content">
+                                    {% for submit in  task.submit_set.all %}
+                                        <a class="" href="{% url 'view-submits' submit.id %}">{{ submit.user.name }}</a>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                        {% endif %}
+                        </td>
+                        </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </section>
+    {% include 'pagination.html' with queryset=tasks custom_range=custom_range %}
+</main>
+{% endblock %}
