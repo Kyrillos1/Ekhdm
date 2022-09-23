@@ -22,7 +22,12 @@
 
 <main class="posts">
     <section class="hero-section text-center">
+        <br>
+
+
+<br>
         <div class="container container--narrow">
+
             <div class="hero-section__box">
                 <h2>Search for <span>quizes</span></h2>
             </div>
@@ -41,11 +46,19 @@
     </section>
     <div class="container">
         <div class="grid ">
+{#                    {% if request.user.groups.all.0.name == 'KhadmE3dad'%}#}
+       <div class="container">
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Tasks</h3>#}
+
+        </div>
+    </div>
+{#{% endif %}#}
         {% for obj in quizes %}
             <button
                 class="btn btn-outline-primary modal-button block"
                 data-pk="{{obj.id}}"
-                data-name="{{obj.name}}"
+                data-name="{{obj.title}}"
 {#                data-topic="{{obj.topic}}"#}
                 data-time="{{obj.time}}"
                 data-desc="{{obj.desc|linebreaksbr}}"
@@ -58,7 +71,7 @@
                 {%  endfor %}
                 data-toggle="modal"
                 data-target="#quizStartModal">
-                {{obj.name}}
+                {{obj.title}}
             </button>
         {% endfor %}
         </div>
@@ -99,7 +112,8 @@ modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
     const valid = modalBtn.getAttribute('data-valid')
     const score = modalBtn.getAttribute('data-score')
     const buttonDiv = document.getElementById('buttonDiv')
-
+{#    {% if %}#}
+{#    {% endif %}#}
 
     QuizName.innerHTML=`${name} Quiz`
     if(score != null){

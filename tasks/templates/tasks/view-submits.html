@@ -5,36 +5,9 @@
 <!-- Main Section -->
 <main class="singleTask my-md">
     <div class="container">
-{#        <div class="layout">#}
-{#            <div class="column column--1of3">#}
-{#                <h3 class="singleTask__subtitle">Tools & Stacks</h3>#}
-{#                <div class="singleTask__toolStack">#}
-{#                    {% for tag in task.tags.all %}#}
-{#                    <span class="tag tag--pill tag--sub tag--lg">#}
-{#                        <small>{{tag}}</small>#}
-{#                    </span>#}
-{#                    {% endfor %}#}
-{##}
-{#                </div>#}
-
-{#                {% if task.source_link %}#}
-{#                <a class="singleTask__liveLink" href="{{task.source_link}}" target="_blank"><i#}
-{#                        class="im im-external-link"></i>Source#}
-{#                    Code#}
-{#                </a>#}
-{#                {% endif %}#}
-
-{#                {% if task.demo_link %}#}
-{#                <a class="singleTask__liveLink" href="{{task.source_link}}" target="_blank"><i#}
-{#                        class="im im-external-link"></i>Live Demo#}
-{##}
-{#                </a>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#            <div class="column column--3of3">#}
-{#                <img class="singleTask__preview" src="{{ task.imageURL }}" alt="portfolio thumbnail" />#}
 <div class="card text-center">
   <div class="card-header">
+
     Answer from {{submit.user.name}}
   </div>
   <div class="card-body">

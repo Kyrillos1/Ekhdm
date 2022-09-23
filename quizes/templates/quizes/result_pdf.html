@@ -1,0 +1,75 @@
+
+
+{% load filters %}
+
+
+
+<html>
+
+<head>
+    <title>Ekhdm - Connect with Developers!</title>
+
+
+</head>
+<style>
+   @page {
+    size: a4 portrait;
+    @frame header_frame {           /* Static Frame */
+        -pdf-frame-content: header_content;
+        left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+    }
+    @frame content_frame {          /* Content Frame */
+        left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+    }
+    @frame footer_frame {           /* Another static Frame */
+        -pdf-frame-content: footer_content;
+        left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+    }
+}
+</style>
+<body>
+<!-- Main Section -->
+<main class="singlePost my-md">
+    <div class="container mt-5">
+        <div class="card">
+          <h1 class="card-header text-center">
+            Answer from {{answers.0.user.name}} for quiz {{result.quiz}}
+          </h1>
+          <div class="card-body">
+            {% for answer in answers %}
+                <h3 class="card-title ">Question: {{ answer.question.text}}</h3>
+                {% if answer.question.type == 'mcq'%}
+                <p class="card-text p-3">
+                    <span class="font-weight-bold" style="padding: 20cm;">Answer: </span>
+                    {{ answer.text|trim:"[,]'"|split:"', '"|join:", "|default:"not answered" |linebreaksbr}}
+                </p>
+                <p class="card-text p-3">
+                    <span class="font-weight-bold">Correct Answer: </span>
+                    {{ answer.question.correctAnswers |linebreaksbr}}
+                    <span class="card-text p-3" style="font-weight: bold;">
+                        mark({{answer.grade  }}/{{answer.question.grade}})</span>
+                </p>
+                {% else %}
+                <p class="card-text p-3">
+                    <span class="font-weight-bold">Answer: </span>
+                    {{ answer.text|default:"not answered" |linebreaksbr}}
+                    <span class="card-text p-3" style="font-weight: bold;">
+                        mark({{answer.grade  }}/{{answer.question.grade}})</span>
+                </p>
+                {% endif %}
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+            {% endfor %}
+          <hr>
+          <div class="card-footer text-center">
+
+            {% if result.score|floatformat:0 > 50 %}Congrates Your Result is {% else %}Unfortunately your Result is {% endif %}{{result.score|floatformat:0}}%
+          </div>
+        </div>
+    </div>
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+
+<!-- Main Section -->
+<main class="formPage my-xl">
+{% if quizForm %}
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'account' %}"><i class="im im-angle-left"></i></a>
+
+        <div class="dev__title fa-align-center">Quiz Form</div>
+            <br>
+
+            <form class="form" method="POST"  enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for field in quizForm %}
+                <!-- Input:Text -->
+                <div class="form__field">
+                    <label for="formInput#text">{{field.label}}</label>
+                    {{field}}
+                </div>
+                {% endfor %}
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+{% endif %}
+{#    <div class="content-box">#}
+{#    <br>#}
+{#        <div class="formWrapper">#}
+{#            <div class="dev__title fa-align-center">َQuestion Form</div>#}
+{#            <br>#}
+{##}
+{#            <form class="form" id = 'form' method="POST" enctype="multipart/form-data">#}
+{#                {% csrf_token %}#}
+{#                {% for questionForm in questionForm %}#}
+{#                    {% for field in questionForm %}#}
+{#                        <div class="form__field">#}
+{#                            <label for="formInput#text">{{field.label}}</label>#}
+{#                            {{field}}#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                {% endfor %}#}
+{#                <input class="btn btn--sub btn--lg  my-md" type="submit" id="submit" value="Submit" />#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{#{% include 'pagination.html' with queryset=questionForms custom_range=custom_range %}#}
+</main>
+
+<script>
+
+</script>
+{% endblock %}

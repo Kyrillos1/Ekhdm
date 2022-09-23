@@ -73,7 +73,7 @@
                       <tr class='clickable-row'>
                         <td>{{ task.user.name }}</td>
                         <td>{{ task.subject }}</td>
-                        <td title="{{ task.desc}}">{{ task.desc|slice:"150" }}</td>
+                        <td title="{{ task.desc}}">{{ task.desc|truncatechars:120 }}</td>
                         <td>{{ task.deadline }}</td>
                         <td>
                         {% if request.user.groups.all.0.name == 'MakhdomE3dad' %}
@@ -81,7 +81,7 @@
                             class="im im-plus"></i> Submit</a>
                         {% elif request.user.groups.all.0.name == 'KhadmE3dad' %}
                             <div class="dropdown">
-                                <span>Mouse over me</span>
+                                <span>submits</span>
                                 <div class="dropdown-content">
                                     {% for submit in  task.submit_set.all %}
                                         <a class="" href="{% url 'view-submits' submit.id %}">{{ submit.user.name }}</a>

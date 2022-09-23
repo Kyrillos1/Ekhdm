@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+
+{% load filters %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="singlePost my-md">
+    <div class="container mt-5">
+        <div class="card">
+          <div class="card-header text-center">
+            Answer from {{answers.0.user.name}} for quiz {{result.quiz}}
+          </div>
+          <div class="card-body">
+            {% for answer in answers %}
+                <h4 class="card-title ">{{ answer.question.text}}</h4>
+                {% if answer.question.type == 'mcq'%}
+                <p class="card-text p-3">
+                    <span class="font-weight-bold">Answer: </span>
+                    {{ answer.text|trim:"[,]'"|split:"', '"|join:", "|default:"not answered" |linebreaksbr}}
+                </p>
+                <p class="card-text p-3">
+                    <span class="font-weight-bold">Correct Answer: </span>
+                    {{ answer.question.correctAnswers |linebreaksbr}}
+                    <span style="float: right" class="card-text p-3" >
+                        mark({{answer.grade  }}/{{answer.question.grade}})</span>
+                </p>
+                {% else %}
+                <p class="card-text p-3">
+                    <span class="font-weight-bold">Answer: </span>
+                    {{ answer.text|default:"not answered" |linebreaksbr}}
+                    <span class="card-text p-3" style="float: right">
+                        mark({{answer.grade  }}/{{answer.question.grade}})</span>
+                </p>
+                {% endif %}
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+            {% endfor %}
+
+{#            <div class=" text-center">#}
+{##}
+{#          <input class="btn btn-success text-center" type="submit" value="Submit" />#}
+{#              {% if submit.submitURL%}#}
+{#            <a href="" class="btn btn-primary">download</a>#}
+{#              {% endif %}#}
+{#          <a href="{% url 'create-message' user.id %}" class="btn btn-primary">Send Message </a>#}
+{#            </div>#}
+
+{##}
+          <div class="card-footer text-center">
+
+            {% if result.score|floatformat:0 > 50 %}Congrates Your Result is {% else %}Unfortunately your Result is {% endif %}<span style="font-weight: bold">{{result.score|floatformat:0}}%</span>    <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button"href="{% url 'result_pdf' result.quiz.id result.user.id %}">
+              PDF
+          </a>
+
+          </div>
+          </div>
+
+        </div>
+    </div>
+    </div>
+</main>
+{% endblock %}

@@ -14,9 +14,6 @@ class PostImportExport(ImportExportModelAdmin):
 @admin.register(Question)
 class PostImportExport(ImportExportModelAdmin):
     pass
-@admin.register(Answer)
-class PostImportExport(ImportExportModelAdmin):
-    pass
 @admin.register(Result)
 class PostImportExport(ImportExportModelAdmin):
     pass

@@ -1,57 +1,168 @@
 {% extends 'main.html' %}
-
+{#{% load filter %}#}
+{% load filters %}
+{#{% load filter_tags %}#}
+{#{% load filter.py %}#}
 {% block content %}
+<style>
 
+
+body{
+    background-color:#eee;
+}
+
+label.radio {
+  cursor: pointer;
+}
+
+label.radio input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+label.radio span {
+  padding: 4px 0px;
+  border: 1px solid red;
+  display: inline-block;
+  color: red;
+  min-width:300px;
+  width:auto;
+  text-align: center;
+  border-radius: 3px;
+  margin-top: 7px;
+  text-transform: uppercase;
+}
+
+label.radio input:checked + span {
+  border-color: red;
+  background-color: red;
+  color: #fff;
+}
+
+.ans {
+  margin-left: 36px !important;
+}
+
+.btn:focus {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.btn:active {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+</style>
 <!-- Main Section -->
 <main class="singlePost my-md">
     <div class="container">
 {#        <div class="layout">#}
-
                 <div class="row">
                     <div class="col">
-                        <b>{{obj.name}}</b>
-{#                        <p>score to pass: {{obj.required_score_to_pass}}%</p>#}
+                        <b>{{quiz.title}}</b>
+{#                        <p>score to pass: {{quiz.required_score_to_pass}}%</p>#}
                     </div>
-
                     <div class="col text-right" id="timer-box"></div>
-
                 </div>
-
                 <a href="{% url 'main_view' %}" class="btn btn-danger">go back</a>
-
                 <form id="quiz-form" class="mt-3 mb-3">
                     {% csrf_token %}
-
-                    <div id="quiz-box"></div>
-
-                    <button type="submit" class="btn btn-primary mt-3">save</button>
+                    <div id="quiz-box">
+{#                        <div class="container mt-5">#}
+                        <div class="d-flex justify-content-center row">
+                            <div class="col-md-10 col-lg-10">
+                                    {% for question in questions %}
+                                <div class="border">
+                                    <div class="question bg-white p-3 border-bottom">
+                                        <div class="d-flex flex-row justify-content-between align-items-center mcq">
+                                            <h4>{{ question.type}} Question</h4><span>{{ question.grade}} درجة </span></div>
+                                    </div>
+                                    <div class="question bg-white p-3 border-bottom" id="parentFinish">
+                                        <div class="d-flex flex-row align-items-center question-title">
+                                            <h3 class="text-danger">Q.</h3>
+                                            <h5 class="mt-1 ml-2">{{ question.text}}</h5>
+                                        </div>
+                                        <br>
+                                        {% if question.QuestionURL != '/images/profiles/user-default.png' %}
+                                        <div class="d-flex flex-row align-items-center question-title">
+                                            <img width=" 400px" height="auto" src="{{ question.QuestionURL}}">
+                                        </div>
+                                        {% endif  %}
+                                        {% if question.type == 'mcq' %}
+                                            {% with question.wrongAnswers|add:","|add:question.correctAnswers|split:','|shuffle as allanswers   %}
+                                                {% for answer in allanswers %}
+                                                    <div class="ans ml-2">
+                                                        <label class="radio">
+                                                            <input type="checkbox" name="answer" class="answerMcq" id='answer' data-id="{{ question.id }}" value="{{ answer }}">
+                                                            <span>{{ answer }}</span>
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endwith %}
+                                        {% elif question.type == 'written' %}
+                                            <label for="formInput#text">Answer</label>
+                                            <textarea class="input ansWritten" name="answer" id="textarea" data-id="{{ question.id }}" placeholder="PUT THE ANSWER HERE"></textarea>
+                                        {% endif %}
+                                        <a href="{% url 'main_view' %}" class="btn btn-success"   id="finish" style="float:right;display: none;" >Finsh</a>
+{#                                     <div  class="d-flex flex-row-reverse  align-items-center " >#}
+{#                                    <button type="submit"  class="btn btn-primary mt-3" >save</button>#}
+{#                                    </div>#}
+                                    </div>
+                                </div>
+                                <br>
+                                    {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                 </form>
-
-                <div id="score-box"></div>
-
-                <div id="result-box"></div>
-
-{#            </div>#}
         </div>
-{#    </div>#}
-{#    </div>#}
+
+
+{% include 'pagination.html' with queryset=questions custom_range=custom_range %}
 </main>
 <script>
+{#print answers if there#}
+const answerMcqs = [...document.getElementsByClassName('answerMcq')]
+    {% if userAnswer%}
+    {% if questions.0.type == 'mcq' %}
+        {% for ans in userAnswer|trim:"[,]'"|split:"', '" %}
+            answerMcqs.forEach(answerMcq=> {
+                if(answerMcq.value == '{{ ans }}'){
+                   answerMcq.click()
+                }
+            })
+        {% endfor %}
+    {% elif questions.0.type == 'written' %}
+        document.getElementById("textarea").value = '{{ userAnswer|trim:"[,]'" }}'
+    {% endif %}
+    {% endif %}
+
+
+
+
+
 const url = window.location.href
 
 const quizBox = document.getElementById('quiz-box')
 const scoreBox = document.getElementById('score-box')
 const resultBox = document.getElementById('result-box')
+const parentFinish = document.getElementById('parentFinish')
+const submitButs = [...document.getElementsByClassName('btn page-link')]
+
+
+
+
 const timerBox = document.getElementById('timer-box')
-
-
 const activateTimer = (time) => {
     if (time.toString().length < 2) {
         timerBox.innerHTML = `<b>0${time}:00</b>`
     } else {
         timerBox.innerHTML = `<b>${time}:00</b>`
     }
-
     let minutes = time - 1
     let seconds = 60
     let displaySeconds
@@ -78,58 +189,204 @@ const activateTimer = (time) => {
             setTimeout(()=>{
                 clearInterval(timer)
                 {#alert('Time over')#}
-                sendData()
+                submitAnswer()
             }, 500)
         }
-
         timerBox.innerHTML = `<b>${displayMinutes}:${displaySeconds}</b>`
     }, 1000)
-    quizForm.addEventListener('submit', e=>{
-        e.preventDefault()
-        clearInterval(timer)
-        sendData()
+    {#quizForm.addEventListener('submit', e=>{#}
+    {#    e.preventDefault()#}
+    {#    clearInterval(timer)#}
+    {#    sendData()#}
+
+}
+activateTimer({{quiz.time}})
+const submitAnswer = () => {
+     ansMcq = []
+    questionId=''
+    answerMcqs.forEach(answerMcq => {
+        if (answerMcq.checked){
+            ansMcq.push(answerMcq.value)
+        }
+        questionId = answerMcq.getAttribute('data-id')
+    })
+
+    ansWritten=''
+    if(document.getElementsByClassName('ansWritten')[0]){
+
+        ansWritten = document.getElementsByClassName('ansWritten')[0].value
+        questionId = document.getElementsByClassName('ansWritten')[0].getAttribute('data-id')
+    }
+
+    data = {
+        'csrfmiddlewaretoken': csrf[0].value,
+        'id': questionId,
+        'ansMcq': ansMcq,
+        'ansWritten': ansWritten,
+    }
+    console.log(data)
+    $.ajax({
+        type: 'POST',
+        data: data,
+        url: `{% url 'save-view' quiz.id %}`,
+        success: function (response) {
+            {#const questions = response#}
+            {#submitBut.click()#}
+            console.log(response)
+            {#for (var i = 0; i < arr.length; i++) {#}
+            {#    document.write("<br><br>array index: " + i);#}
+            {#    var quiz = arr[i];#}
+            {#    for (var key in quiz) {#}
+            {#        var value = quiz[key];#}
+            {#        document.write("<br> - " + key + ": " + value);#}
+            {#    }#}
+            {##}
+            {#    for (var i = 0; i < response.length; i++) {#}
+            {#        console.log(response[i].fields)#}
+            {#        quizBox.innerHTML += ``#}
+            {#    }#}
+            {##}
+        }
+    })
+
+
+}
+
+submitButs.forEach(submitBut=> submitBut.addEventListener('click', (e)=> {
+    {#e.preventDefault()#}
+    submitAnswer()
+}))
+const finishBut = document.getElementById('finish')
+
+var showFinish=true
+submitButs.forEach(submitBut=> {
+    if (submitBut.innerText == 'Next ❯') showFinish = false
+})
+if(showFinish){
+    finishBut.style.display = "block"
+    finishBut.addEventListener('click', ()=> {
+        {#e.preventDefault()#}
+        submitAnswer()
     })
 }
 
-$.ajax({
-    type: 'GET',
-    url: `${url}data`,
-    success: function(response){
-        const data = response.data
-        data.forEach(el => {
-            for (const [question, answers] of Object.entries(el)){
 
-                quizBox.innerHTML += `
-                    <hr>
-                    <div class="mb-2">
-                        <b>${question}</b>
-                    </div>
-                `
-                if(answers[0] == 'written'){
-                    quizBox.innerHTML += `
-                        <div>
-                            <textarea class="written" id="ans" name="${question}" rows="4" cols="50"></textarea>
-                        </div>
-                `
-                }else{
-                    answers[1].forEach(answer=>{
-                        quizBox.innerHTML += `
-                            <div>
-                                <input type="checkbox" class="mcq" id="${question}-${answer}" name="${question}" value="${answer}">
-                                <label for="${question}">${answer}</label>
-                            </div>
-                `
-                    })
-                }
-            }
-        });
-        activateTimer(response.time)
 
-    },
-    error: function(error){
-        console.log(error)
-    }
-})
+
+{#id=''#}
+{#id = document.getElementsByClassName('ansWritten')[0].getAttribute('data-id')#}
+{#answerMcqs.forEach(answerMcq=> id = answerMcq.getAttribute('data-id'))#}
+{##}
+{#const getAnswer = (id) => {#}
+{#    data = {#}
+{#        'csrfmiddlewaretoken': csrf[0].value,#}
+{#        'id': id,#}
+{#    }#}
+{#    console.log(data)#}
+{#    $.ajax({#}
+{#        type: 'POST',#}
+{#        data: data,#}
+{#        url: `{% url 'save-view' quiz.id %}`,#}
+{#        success: function (response) {#}
+            {#const questions = response#}
+            {#console.log(response)#}
+            {#for (var i = 0; i < arr.length; i++) {#}
+            {#    document.write("<br><br>array index: " + i);#}
+            {#    var quiz = arr[i];#}
+            {#    for (var key in quiz) {#}
+            {#        var value = quiz[key];#}
+            {#        document.write("<br> - " + key + ": " + value);#}
+            {#    }#}
+            {##}
+            {#    for (var i = 0; i < response.length; i++) {#}
+            {#        console.log(response[i].fields)#}
+            {#        quizBox.innerHTML += ``#}
+            {#    }#}
+            {##}
+{#        }#}
+{#    })#}
+{#getAnswer(id)#}
+
+
+
+
+{#$.ajax({#}
+{#    type: 'GET',#}
+{#    url: `${url}data`,#}
+{#    success: function(response){#}
+        {#const questions = response#}
+{#        console.log(response)#}
+        {#for (var i = 0; i < arr.length; i++){#}
+        {#  document.write("<br><br>array index: " + i);#}
+        {#  var quiz = arr[i];#}
+        {#  for (var key in quiz){#}
+        {#    var value = quiz[key];#}
+        {#    document.write("<br> - " + key + ": " + value);#}
+        {#  }#}
+{##}
+{#        for(var i = 0; i < response.length; i++) {#}
+{#            console.log(response[i].fields)#}
+{#            quizBox.innerHTML +=``#}
+{#        }#}
+{##}
+{##}
+
+
+
+
+
+
+
+
+
+        {#data.forEach(el => {#}
+        {#    console.log(el)#}
+
+
+            {#for (const [question, answers] of Object.entries(el)){#}
+            {##}
+            {#    quizBox.innerHTML += `#}
+            {#        <hr>#}
+            {#        <div class="mb-2">#}
+            {#            <b>${question}</b>#}
+            {#        </div>#}
+            {#    `#}
+            {#    if(answers[0] == 'written'){#}
+            {#        quizBox.innerHTML += `#}
+            {#            <div>#}
+            {#                <textarea class="written" id="ans" name="${question}" rows="4" cols="50"></textarea>#}
+            {#            </div>#}
+            {#    `#}
+            {#    }else{#}
+            {#        answers[1].forEach(answer=>{#}
+            {#            quizBox.innerHTML += `#}
+            {#                <div>#}
+            {#                    <input type="checkbox" class="mcq" id="${question}-${answer}" name="${question}" value="${answer}">#}
+            {#                    <label for="${question}">${answer}</label>#}
+            {#                </div>#}
+            {#    `#}
+            {#        })#}
+            {#    }#}
+
+
+{#        activateTimer({{quiz.time}})#}
+{##}
+{#    },#}
+{#    error: function(error){#}
+{#        console.log(error)#}
+{#    }#}
+
+
+
+
+
+
+
+
+
+
+
+
 {#let values=[]#}
 {#const mcqAns2 = [...document.getElementsByClassName('mcq')]#}
 {#mcqAns2.forEach(el=>{#}
@@ -140,47 +397,47 @@ $.ajax({
 {#    }})#}
 {#console.log(values)#}
 console.log('gggggggggggggggggggggggggggggggggg')
-const quizForm = document.getElementById('quiz-form')
+{#const quizForm = document.getElementById('quiz-form')#}
 const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
-const sendData = () => {
-    const mcqAns = [...document.getElementsByClassName('mcq')]
-    const writtenAns = [...document.getElementsByClassName('written')]
-    const data = {}
-    data['csrfmiddlewaretoken'] = csrf[0].value
-    let values=[]
-    let quizNameHelper=new Set()
-    mcqAns.forEach(el=>{
+{#const sendData = () => {#}
+{#    const mcqAns = [...document.getElementsByClassName('mcq')]#}
+{#    const writtenAns = [...document.getElementsByClassName('written')]#}
+{#    const data = {}#}
+{#    data['csrfmiddlewaretoken'] = csrf[0].value#}
+{#    let values=[]#}
+{#    let quizNameHelper=new Set()#}
+{#    mcqAns.forEach(el=>{#}
+{##}
+{#        if (el.checked) {#}
+{#            if(!quizNameHelper.has(el.name))#}
+{#                values=[]#}
+{#            quizNameHelper.add(el.name)#}
+{#            values += el.value+","#}
+{##}
+{#            data[el.name] = values#}
+{##}
+{#        } else {#}
+{#            if (!data[el.name]) {#}
+{#                data[el.name] = null#}
+{#            }#}
+{#        }#}
+{#    })#}
+{#    writtenAns.forEach(el=>{#}
+{#        data[el.name] = el.value#}
+{#    })#}
+{#    $.ajax({#}
+{#        type: 'POST',#}
+{#        url: `${url}save/`,#}
+{#        data: data,#}
+{#        success: function(response){#}
+{#            window.location.href = 'http://127.0.0.1:8000/quizes/'#}
+{#        },#}
+{#        error: function(error){#}
+{#            console.log(error)#}
+{#        }#}
+{#    })#}
 
-        if (el.checked) {
-            if(!quizNameHelper.has(el.name))
-                values=[]
-            quizNameHelper.add(el.name)
-            values += el.value+","
-
-            data[el.name] = values
-
-        } else {
-            if (!data[el.name]) {
-                data[el.name] = null
-            }
-        }
-    })
-    writtenAns.forEach(el=>{
-        data[el.name] = el.value
-    })
-    $.ajax({
-        type: 'POST',
-        url: `${url}save/`,
-        data: data,
-        success: function(response){
-            window.location.href = 'http://127.0.0.1:8000/quizes/'
-        },
-        error: function(error){
-            console.log(error)
-        }
-    })
-}
 console.log('hello world quiz')
 </script>
 {% endblock %}

@@ -1,0 +1,237 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+.dropdown {
+  position: relative;
+  display: block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  height: auto;
+  max-height: 400px;
+  overflow-x: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+
+
+</style>
+
+<!-- Main Section -->
+<main class="quizes">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Quizes</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'manage-quizes' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Quizes </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Quiz Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Result: DevList -->
+    <section class="quizesList">
+<br>
+{% if request.user.groups.all.0.name == 'KhadmE3dad'%}
+       <div class="container">
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Tasks</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-quiz' ' ' %}"><i
+              class="im im-plus"></i> Add Quiz</a>
+        </div>
+    </div>
+{% endif %}
+
+<br>
+        <div class="container">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">BY</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Desc</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Number Of Questions</th>
+                  <th scope="col">Valid</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for quiz in quizes %}
+                    <tr class='clickable-row'>
+                        <td>{{ quiz.user.name }}</td>
+                        <td>{{ quiz.title }}</td>
+                        <td title="{{ quiz.desc}}">{{ quiz.desc|slice:"150" }}</td>
+                        <td>{{ quiz.date }}</td>
+                        <td>{{ quiz.time }}</td>
+                        <td>{{ quiz.number_of_questions }}</td>
+                        <td>{{ quiz.valid }}</td>
+                        <td>
+                            <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-quiz' quiz.id %}"><i
+                            class="im im-plus"></i> Edit Quiz</a>
+{#                            <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button" href="{% url 'create-question' quiz.id ' ' %}" id ='{{ quiz.id }}'><i#}
+                            {% if quiz.number_of_questions > quiz.get_questions.count%}
+                            <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button" href="{% url 'create-question' quiz.id  ' ' %}" id ='{{ quiz.id }}'><i
+                            class="im im-plus"></i> Add Questions</a>
+                            {% endif %}
+{#                        <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'remark-quiz' quiz.id %}"><i#}
+{#                            class="im im-plus"></i> Edit Quiz</a>#}
+{#                            <div class="dropdown">#}
+{#                                    <span>Remark</span>#}
+{#                                    <div class="dropdown-content">#}
+{#                                        {% for makhdom in  makhdomen %}#}
+{#                                            <a href="{% url 'remark-quiz' quiz.id makhdom.id %}">{{ makhdom.name }}</a>#}
+{#                                        {% endfor %}#}
+{#                                    </div>#}
+{#                            </div>#}
+                        </td>
+                    </tr>
+                    <tr class=''>
+                        <td colspan=75%>
+                            <div class="dropdown">
+                                <span>Click to see Questions</span>
+                                <div class="dropdown-content">
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">image</th>
+                                          <th scope="col">Title</th>
+                                          <th scope="col">Type</th>
+                                          <th scope="col">Grade</th>
+                                          <th scope="col">Correct Answers</th>
+                                          <th scope="col">Wrong Answers</th>
+                                          <th scope="col">Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                      {% for q in quiz.get_questions %}
+                                              <tr class='clickable-row'>
+                                                <td><img class="avatar avatar--md" src="{{q.question_image.url}}" alt="user" /></td>
+                                                <td title="{{ q.text}}">{{ q.text|slice:"150" }}</td>
+                                                <td>{{ q.type }}</td>
+                                                <td >{{ q.grade }}</td>
+                                                <td>{{ q.correctAnswers }}</td>
+                                                <td>{{ q.wrongAnswers }}</td>
+                                                <td>
+                                                    <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button" href="{% url 'create-question' quiz.id  q.id %}" id ='{{ quiz.id }}'><i
+                            class="im im-plus"></i>Edit Questions</a>
+                                                </td>
+
+                                            </tr>
+                                      {% endfor %}
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+ <tr class=''>
+                        <td colspan=75%>
+                            <div class="dropdown">
+                                <span>Click to see Admitors</span>
+                                <div class="dropdown-content">
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">image</th>
+                                          <th scope="col">name</th>
+                                          <th scope="col">Result</th>
+                                          <th scope="col">Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for result in  quiz.result_set.all %}
+                                              <tr class='clickable-row'>
+                                                <td><img class="avatar avatar--md" src="{{result.user.imageURL}}" alt="user" /></td>
+                                                <td>{{ result.user.name }}</td>
+                                                <td>{{ result.score }}</td>
+                                                <td>
+                                                    <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button"href="{% url 'remark-quiz' quiz.id result.user.id %}">
+                                                        {% if result.score %}Edit Remark{% else %}Remark{% endif %}
+                                                    </a>
+                                                <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button"href="{% url 'result_view' quiz.id result.user.id %}">
+                                                        View Result Detalis
+                                                    </a>
+                                                </td>
+
+{#                                                <td >{{ q.grade }}</td>#}
+{#                                                <td>{{ q.correctAnswers }}</td>#}
+{#                                                <td>{{ q.wrongAnswers }}</td>#}
+{#                                                <td>#}
+{#                                                    <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center questions-button" href="{% url 'create-question' quiz.id  q.id %}" id ='{{ quiz.id }}'><i#}
+{#                            class="im im-plus"></i>Edit Questions</a>#}
+{#                                                </td>#}
+                                            </tr>
+                                      {% endfor %}
+                                      </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </section>
+    {% include 'pagination.html' with queryset=quizes custom_range=custom_range %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</main>
+    <script>
+const modalBtns = [...document.getElementsByClassName('questions-button')]
+const url = window.location.href
+
+modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+
+    $.ajax({
+        type: 'GET',
+        url: `${url}${modalBtn.id}/`,
+        {#data: modalBtn.id,#}
+        success: function(response){
+
+            {#for(q in )#}
+console.log(response)
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
+}))
+    </script>
+{% endblock %}

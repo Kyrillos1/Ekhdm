@@ -65,10 +65,11 @@ INSTALLED_APPS = [
     'comments.apps.CommentsConfig',
     # 'crispy_forms',
     'import_export',
+    'django_filters',
 
     'rest_framework',
     'corsheaders',
-    'storages'
+    'storages',
 
 ]
 
@@ -141,6 +142,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+        'libraries':{
+               # make your file entry here.
+               'filters': 'quizes.templatetags.filter',
+            }
         },
     },
 ]
