@@ -1,12 +1,7 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from .models import *
 from django.views.generic import ListView
-
 from django.http import JsonResponse, HttpResponse
-
 # from django.http import FileResponse
 # import io
 # from reportlab.pdfgen import canvas
@@ -22,7 +17,7 @@ from users.decorator import allowed_users
 from django.contrib.auth.decorators import login_required
 from .utils import *
 from .forms import *
-# import json
+import json
 from django.core import serializers
 from quizes.templatetags.filter import *
 import random
@@ -51,7 +46,7 @@ def ajax_test(request):
 #     template_name = 'quizes/quizes.html'
 #
 #     # @login_required(login_url="login")
-#     # @allowed_users(allowed_roles=['MakhdomE3dad'])
+#     # @allowed_users(allowed_roles=['اسرة اعداد خدام - مخدومين'])
 #     def dispatch(self, request, *args, **kwargs):
 #         return super(IndexView, self).dispatch(request, *args, **kwargs)
 #     def get_context_data(self,**kwargs):
@@ -73,7 +68,7 @@ def ajax_test(request):
 
 # for listing quizes
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['MakhdomE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام - مخدومين'])
 def QuizListView(request):
     quizes, result, search_query = searchQuizes(request)
     custom_range, quizes = paginateQuizes(request, quizes, 6)
@@ -83,7 +78,7 @@ def QuizListView(request):
 
 # for quiz's questions
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['MakhdomE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام - مخدومين'])
 def quiz_view(request, pk):
     quiz = Quiz.objects.get(id=pk)
     user = request.user.profile
@@ -118,7 +113,7 @@ def quiz_view(request, pk):
 
 # for saving answers
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['MakhdomE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام - مخدومين'])
 def save_quiz_view(request, pk):
     if is_ajax(request):
         data = request.POST
@@ -137,6 +132,8 @@ def save_quiz_view(request, pk):
                     userAns.text = None
             elif question.type == 'written':
                 userAns.text = data_['ansWritten'][0]
+                # print(data_['ansWritten'])
+                # print(data_['ansWritten'])
             userAns.save()
         except:
             userAns = UserAns()
@@ -187,7 +184,7 @@ def save_quiz_view(request, pk):
         return JsonResponse({'done': True})
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def manageQuizes(request):
     quizes, result, search_query = searchQuizes(request)
@@ -204,16 +201,19 @@ def manageQuizes(request):
         'search_query': search_query,
         'custom_range': custom_range,
         'makhdomen': makhdomen,
+
+
         # 'form': form,
     }
 
     return render(request, 'quizes/manage_quizes.html', context)
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def createQuiz(request, pk=None):
     profile = request.user.profile
+
     try:
         quiz = Quiz.objects.get(id=pk)
         form = QuizForm(instance=quiz)
@@ -237,7 +237,7 @@ def createQuiz(request, pk=None):
     return render(request, "quizes/quiz_form.html", context)
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def createQuestion(request, pk, pk2):
     profile = request.user.profile
@@ -273,7 +273,7 @@ def createQuestion(request, pk, pk2):
     return render(request, "quizes/question_form.html", context)
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def remarkQuiz(request, quiz_pk, user_pk):
     quiz = Quiz.objects.get(id=quiz_pk)

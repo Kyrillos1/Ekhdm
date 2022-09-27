@@ -60,7 +60,7 @@ class Like(models.Model):
         Book, null=True, blank=True, on_delete=models.CASCADE)
     task = models.ForeignKey(
         Task, null=True, blank=True, on_delete=models.CASCADE)
-    value = models.CharField(choices=LIKE_CHOICES, max_length=8, null=True)
+    # value = models.CharField(choices=LIKE_CHOICES, max_length=8, null=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,

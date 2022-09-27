@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load filters %}
 <!-- Header Section -->
 <header class="header">
     <div class="container container--narrow">
@@ -16,20 +16,36 @@
             </label>
             <ul class="header__menu">
 {#                <li class="header__menuItem"><a href="{% url 'profiles' %}">Developers</a></li>#}
-                <li class="header__menuItem"><a href="{% url 'demomethods' %}">وسائل الايضاح</a></li>
-                <li class="header__menuItem"><a href="{% url 'books' %}">Books</a></li>
+
 
                 {% if request.user.is_authenticated %}
-                    <li class="header__menuItem"><a href="{% url 'tasks' %}">Tasks</a></li>
 
-                    {% if request.user.groups.all.0.name == 'MakhdomE3dad'%}
-                        <li class="header__menuItem"><a href="{% url 'main_view' %}">Quizes</a></li>
-                        <li class="header__menuItem"><a href="{% url 'note' %}">Add Note</a></li>
-                    {% endif %}
-                    {% if request.user.groups.all.0.name == 'KhadmE3dad'%}
-                        <li class="header__menuItem"><a href="{% url 'manage-quizes' %}">Quizes</a></li>
-                        <li class="header__menuItem"><a href="{% url 'makhdomen' ' ' %}">مخدومين</a></li>
-                    {% endif %}
+                    <li class="header__menuItem"><a href="{% url 'demomethods' %}">وسائل الايضاح</a></li>
+                    <li class="header__menuItem"><a href="{% url 'books' %}">Books</a></li>
+
+                    {% for group in request.user.groups.all %}
+                    <li class="header__menuItem dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          {{group}}
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                        {% if request.user.groups.all|containGroup:'اسرة اعداد خدام - مخدومين'%}
+                            <li><a class="dropdown-item" href="{% url 'tasks' %}">Tasks</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main_view' %}">Quizes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'note' %}">Add Note</a></li>
+                        {% endif %}
+
+                        {% if request.user.groups.all|containGroup:'اسرة اعداد خدام' %}
+                            <li><a class="dropdown-item" href="{% url 'manage-quizes' %}">Quizes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'makhdomen' ' ' %}">مخدومين</a></li>
+                            <li><a class="dropdown-item" href="{% url 'tasks' %}">Tasks</a></li>
+                        {% endif %}
+
+                      </ul>
+                    </li>
+                    {% endfor %}
+
 
                     <li class="header__menuItem"><a href="{% url 'inbox' %}">Inbox</a></li>
                     <li class="header__menuItem"><a href="{% url 'account' %}">Account</a></li>

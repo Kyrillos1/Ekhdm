@@ -2,13 +2,15 @@ from django.db import models
 import uuid
 
 from django.db.models.deletion import CASCADE
-from users.models import Profile
+from users.models import Profile,Level
 
 
 # from users.models import Profile
 class Task(models.Model):
     user = models.ForeignKey(
         Profile, null=True, blank=True, on_delete=models.CASCADE)
+    level = models.ForeignKey(
+        Level, null=True, blank=True, on_delete=models.CASCADE)
     subject = models.CharField(max_length=200, blank=True, null=True)
     desc = models.TextField(null=True, blank=True)
     task_image = models.ImageField(

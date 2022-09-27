@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
         ('users', '0005_alter_profile_options'),
         ('books', '0002_rename_book_file_book_featured_image'),
         ('posts', '0007_remove_save_post_delete_like_delete_save'),
-        ('comments', '0001_initial'),
+        ('reacts', '0001_initial'),
     ]
 
     operations = [

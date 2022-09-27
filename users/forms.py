@@ -1,9 +1,8 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile,\
-    Message
-
+from .models import Profile, Message
+from django import forms
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -23,15 +22,24 @@ class CustomUserCreationForm(UserCreationForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['name', 'email', 'username',
-                   'bio','short_intro' ,'profile_image',
-                  'social_facebook','family', 'role',  'job']
+        fields = ['name', 'email',
+                   'Educational_qualification', 'bio',  'short_intro', 'profile_image',
+                  'social_facebook',  'job']
+        # exclude =['church']
+        # widgets = {
+        #     'data_of_birth': forms.DateInput(
+        #         # format=('%Y-%m-%d %H:%M:%S.%f'),
+        #         format=('%Y-%m-%d'),
+        #         attrs={'placeholder': 'Select a date',
+        #                'type': 'date',  # <--- IF I REMOVE THIS LINE, THE INITIAL VALUE IS DISPLAYED
+        #                })}
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'input'})
+            field.widget.attrs.update({'class': 'form-control'})
+
 
 
 # class SkillForm(ModelForm):

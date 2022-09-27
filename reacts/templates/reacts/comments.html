@@ -1,0 +1,15 @@
+{% for comment in comments %}
+    {% if comment.body %}
+    <div class="comment">
+        <a href="{% url 'user-profile' comment.user.id  %}">
+            <img class="avatar avatar--md" src="{{comment.user.profile_image.url}}" alt="user" />
+        </a>
+        <div class="comment__details">
+            <a href="{% url 'user-profile' comment.user.id  %}"
+                class="comment__author">{{comment.user.name}}</a>
+            <p class="comment__info">{{comment.body|linebreaksbr}}</p>
+            <p class="comment__info">{{comment.created|date:"DATETIME_FORMAT"}}</p>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}

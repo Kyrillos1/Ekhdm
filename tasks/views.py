@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import *
 from .forms import *
-from comments.forms import CommentForm
+from reacts.forms import CommentForm
 from .utils import searchTasks, paginateTasks
 from users.decorator import allowed_users
 from django.contrib.auth.decorators import login_required
@@ -57,7 +57,7 @@ def task(request, pk):
     return render(request, 'tasks/single-task.html', {'task': taskObj, 'form': form})
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def createTask(request):
     profile = request.user.profile
@@ -76,7 +76,7 @@ def createTask(request):
     return render(request, "tasks/task_form.html", context)
 
 
-@allowed_users(allowed_roles=['KhadmE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def deleteTask(request, pk):
     profile = request.user.profile
@@ -90,7 +90,7 @@ def deleteTask(request, pk):
     return render(request, 'delete_template.html', context)
 
 
-# @allowed_users(allowed_roles=['KhadmE3dad'])
+# @allowed_users(allowed_roles=['اسرة اعداد خدام'])
 @login_required(login_url="login")
 def submitTask(request, pk):
     profile = request.user.profile

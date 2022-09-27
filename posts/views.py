@@ -5,17 +5,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Post
 from .forms import PostForm
-from comments.forms import CommentForm
-from comments.models import Like
+from reacts.forms import CommentForm
+from reacts.models import Like
 from .utils import searchPosts, paginatePosts
 
 
 def posts(request):
     posts, search_query = searchPosts(request)
     custom_range, posts = paginatePosts(request, posts, 6)
-
+    form = CommentForm()
     context = {'posts': posts,
-               'search_query': search_query, 'custom_range': custom_range}
+               'search_query': search_query,
+               'custom_range': custom_range,
+               'form': form
+               }
     return render(request, 'posts/posts.html', context)
 
 
@@ -23,53 +26,20 @@ def post(request, pk):
     postObj = Post.objects.get(id=pk)
     form = CommentForm()
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        comment = form.save(commit=False)
-        comment.post = postObj
-        comment.user = request.user.profile
-        comment.save()
+    # if request.method == 'POST':
+    #     form = CommentForm(request.POST)
+    #     comment = form.save(commit=False)
+    #     comment.post = postObj
+    #     comment.user = request.user.profile
+    #     comment.save()
 
         # postObj.getVoteCount
 
-        messages.success(request, 'Your comment was successfully submitted!')
-        return redirect('post', pk=postObj.id)
+        # messages.success(request, 'Your comment was successfully submitted!')
+        # return redirect('post', pk=postObj.id)
 
     return render(request, 'posts/single-post.html', {'post': postObj, 'form': form})
 
-@login_required
-def like_unlike_post(request):
-    profile = request.user.profile
-    if request.method == 'POST':
-        post_id = request.POST.get('post_id')
-        post = Post.objects.get(id=post_id)
-        # profile = Profile.objects.get(user=user)
-
-        if profile in post.liked.all():
-            post.liked.remove(profile)
-        else:
-            post.liked.add(profile)
-
-        like, created = Like.objects.get_or_create(user=profile, post=post)
-
-        if not created:
-            if like.value == 'Like':
-                like.value = 'Unlike'
-            else:
-                like.value = 'Like'
-        else:
-            like.value = 'Like'
-
-            post.save()
-            like.save()
-
-        # data = {
-        #     'value': like.value,
-        #     'likes': post_obj.liked.all().count()
-        # }
-
-        # return JsonResponse(data, safe=False)
-    return redirect('posts')
 
 
 @login_required(login_url="login")

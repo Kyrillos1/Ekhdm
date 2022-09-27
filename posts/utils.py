@@ -4,7 +4,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def paginatePosts(request, posts, results):
-
     page = request.GET.get('page')
     paginator = Paginator(posts, results)
 
@@ -33,7 +32,6 @@ def paginatePosts(request, posts, results):
 
 
 def searchPosts(request):
-
     search_query = ''
 
     if request.GET.get('search_query'):
@@ -42,7 +40,14 @@ def searchPosts(request):
     # tags = Tag.objects.filter(name__icontains=search_query)
 
     posts = Post.objects.distinct().filter(
-        Q(body__icontains=search_query) |
-        Q(user__name__icontains=search_query)
+        (
+                Q(public=True) |
+                Q(level__in=request.user.profile.get_levels())
+        ) &
+        (
+                Q(body__icontains=search_query) |
+                Q(user__name__icontains=search_query)
+        )
+
     )
     return posts, search_query

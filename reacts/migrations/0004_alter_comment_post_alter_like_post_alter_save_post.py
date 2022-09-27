@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('posts', '0008_post_liked'),
-        ('comments', '0003_remove_like_positive_like_updated_like_value'),
+        ('reacts', '0003_remove_like_positive_like_updated_like_value'),
     ]
 
     operations = [

@@ -1,6 +1,132 @@
 {% extends 'main.html' %}
 {% block content %}
+<style>
+.like-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.like-button.animated {
+  -webkit-animation: pop 0.9s both;
+  animation: pop 0.9s both;
+}
+.like-button svg {
+  opacity: 1;
+}
+.like-button svg path {
+  fill: #333;
+  transition: fill .4s ease-out;
+}
+.like-button.active svg path {
+  fill: #2196f3;
+ }
+.containerImg {
+  position: relative;
 
+}
+
+/* Make the image responsive */
+.postImg img {
+  width: 100%;
+  height: auto;
+}
+
+
+/* Style the button and place it in the middle of the container/image */
+.containerImg .settingsBtn {
+    position: absolute;
+    height:20px!important;
+    width:20px !important;
+    top: 5px;
+    right: 5px!important;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+
+{#.dropdown {#}
+{#  position: relative;#}
+{#  display: block;#}
+
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 80px;
+  {#box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);#}
+  {#z-index: 1;#}
+right: 20px!important;
+  height: auto;
+  max-height: 400px;
+  {#overflow-x: hidden;#}
+}
+
+.settingsBtn:hover .dropdown-content {
+    display: inline-block;
+}
+{#@-webkit-keyframes pop {#}
+{#  0% {#}
+{#    -webkit-transform: scale3d(1, 1, 1);#}
+{#    transform: scale3d(1, 1, 1);#}
+{#  }#}
+{#  30% {#}
+{#    -webkit-transform: scale3d(1.25, 0.75, 1);#}
+{#    transform: scale3d(1.25, 0.75, 1);#}
+{#  }#}
+{#  40% {#}
+{#    -webkit-transform: scale3d(0.75, 1.25, 1);#}
+{#    transform: scale3d(0.75, 1.25, 1);#}
+{#  }#}
+{#  50% {#}
+{#    -webkit-transform: scale3d(1.15, 0.85, 1);#}
+{#    transform: scale3d(1.15, 0.85, 1);#}
+{#  }#}
+{#  65% {#}
+{#    -webkit-transform: scale3d(0.95, 1.05, 1);#}
+{#    transform: scale3d(0.95, 1.05, 1);#}
+{#  }#}
+{#  75% {#}
+{#    -webkit-transform: scale3d(1.05, 0.95, 1);#}
+{#    transform: scale3d(1.05, 0.95, 1);#}
+{#  }#}
+{#  100% {#}
+{#    -webkit-transform: scale3d(1, 1, 1);#}
+{#    transform: scale3d(1, 1, 1);#}
+{#  }#}
+
+
+{#@keyframes pop {#}
+{#  0% {#}
+{#    -webkit-transform: scale3d(1, 1, 1);#}
+{#    transform: scale3d(1, 1, 1);#}
+{#  }#}
+{#  30% {#}
+{#    -webkit-transform: scale3d(1.25, 0.75, 1);#}
+{#    transform: scale3d(1.25, 0.75, 1);#}
+{#  }#}
+{#  40% {#}
+{#    -webkit-transform: scale3d(0.75, 1.25, 1);#}
+{#    transform: scale3d(0.75, 1.25, 1);#}
+{#  }#}
+{#  50% {#}
+{#    -webkit-transform: scale3d(1.15, 0.85, 1);#}
+{#    transform: scale3d(1.15, 0.85, 1);#}
+{#  }#}
+{#  65% {#}
+{#    -webkit-transform: scale3d(0.95, 1.05, 1);#}
+{#    transform: scale3d(0.95, 1.05, 1);#}
+{#  }#}
+{#  75% {#}
+{#    -webkit-transform: scale3d(1.05, 0.95, 1);#}
+{#    transform: scale3d(1.05, 0.95, 1);#}
+{#  }#}
+{#  100% {#}
+{#    -webkit-transform: scale3d(1, 1, 1);#}
+{#    transform: scale3d(1, 1, 1);#}
+{#  }#}
+
+</style>
 
 <!-- Main Section -->
 <main class="posts">
@@ -27,75 +153,236 @@
     <!-- Search Result: DevList -->
     <section class="postsList">
     <div class="container">
-        <div class="settings grid ">
+        <div class="settings grid text-center">
 {#          <h3 class="settings__title align-items-center">Last Posts</h3>#}
-          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-post' %}"><i
-              class="im im-plus"></i> Add Post</a>
+          <a class="tag tag--pill tag--sub settings__btn tag--lg " href="{% url 'create-post' %}"><i
+              class="im im-plus"></i>Post Something</a>
         </div>
     </div>
+    <div class="container">
+        <div class="grid ">
+            {% for post in posts %}
+            <div class="column"style="width: 100%;">
 
-        <div class="container">
-            <div class="grid ">
-
-                {% for post in posts %}
-                <div class="column ">
-                    <div class="card post">
-                        <a href="{% url 'post' post.id %}" class="post ">
-                            <img class="post__thumbnail " src="{{post.imageURL}}" alt="post thumbnail" />
-                            <div class="card__body">
-                                <h3 class="post__title">{{post.user}}</h3>
-                                <p><a class="post__author" href="{% url 'user-profile' post.user.id %}">By
-                                        {{post.user.name}}</a>
-                                </p>
-{#                                <p class="post--rating">#}
-{#                                    <span style="font-weight: bold;">{{post.vote_ratio}}%</span> Positive#}
-{#                                    Feedback ({{post.vote_total}}) Vote{{post.vote_total|pluralize:"s"}}#}
-{#                                </p>#}
-
-                            </div>
+                <div class="card post containerImg" style="width: 100%;">
+                    <div class="card-header">
+                        <a style="text-decoration: none;" href="{% url 'user-profile' post.user.id  %}">
+                            <img class="avatar avatar--sm" src="{{post.user.profile_image.url}}" alt="user" />
+                            <span style="padding-left: 4px;font-weight: bold">{{post.user}}</span>
                         </a>
-                        {% if post.user.id == request.user.profile.id %}
-                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-post' post.id %}?next=/account">
+                    </div>
+                    <a href="{% url 'post' post.id %}" class="post ">
+                    <img class="demomethod__thumbnail postImg" height="80px" src="{{post.imageURL}}" alt="post thumbnail"/>
+                    </a>
+                <hr>
+                {% if post.user.id == request.user.profile.id %}
+                    <span class="settingsBtn  dropdown" >
+                      <img  class="" viewBox="0 0 1792 1792" src="/images/profiles/settings.png" >
+                        <div class="dropdown-content">
+
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-post' post.id %}"><i
+                              class="im im-edit"></i> Edit</a>
+                            <a class="tag tag--pill tag--sub settings__btn" href="{% url 'delete-post' post.id %}?next=/account">
                                 <i class="im im-x-mark-circle-o"></i>
                                 Delete
                             </a>
-                        {% endif %}
-
+                        </div>
+                    </span>
+                 {% endif %}
+                    <div class="card__body">
+                        <p>
+                            {{post.body|linebreaksbr}}
+                        </p>
                     </div>
-                <div class="right floated">
-                    <form action="{% url 'like-post-view' %}" method="POST" class='like-form' id='{{post.id}}'>
-                        {% csrf_token %}
-                        <input type="hidden" name="post_id" value={{post.id}}>
-
-                            <button type="submit" class="ui button like-btn{{post.id}}">
-                                {% if profile not in post.liked.all %}
-                                    Like
-                                {% else %}
-                                    Unlike
-                                {% endif %}
-                            </button>
-                            <div class="ui grid">
-                                <div class="column">
-                                    <div class="like-count{{post.id}}"> {{post.num_likes}} </div>
-                                </div>
-                                <div class="column">
-                                    likes
-                                </div>
-                            </div>
-                    </form>
-                </div>
-                </div>
-                {% endfor %}
-
+                    <div class="card-footer text-muted "style="padding-bottom: 20px" >
+                        <a  class="like-button likeBtn" style="display: inline-block" id="likeBtn" data-id="{{ post.id }}">
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M320 1344q0-26-19-45t-45-19q-27 0-45.5 19t-18.5 45q0 27 18.5 45.5t45.5 18.5q26 0 45-18.5t19-45.5zm160-512v640q0 26-19 45t-45 19h-288q-26 0-45-19t-19-45v-640q0-26 19-45t45-19h288q26 0 45 19t19 45zm1184 0q0 86-55 149 15 44 15 76 3 76-43 137 17 56 0 117-15 57-54 94 9 112-49 181-64 76-197 78h-129q-66 0-144-15.5t-121.5-29-120.5-39.5q-123-43-158-44-26-1-45-19.5t-19-44.5v-641q0-25 18-43.5t43-20.5q24-2 76-59t101-121q68-87 101-120 18-18 31-48t17.5-48.5 13.5-60.5q7-39 12.5-61t19.5-52 34-50q19-19 45-19 46 0 82.5 10.5t60 26 40 40.5 24 45 12 50 5 45 .5 39q0 38-9.5 76t-19 60-27.5 56q-3 6-10 18t-11 22-8 24h277q78 0 135 57t57 135z"/></svg>
+                        </a>
+                        <div style="display: inline-block; width:20!important;">
+                              <img data-id="{{ post.id }}" class="comment-button"  height="20" viewBox="0 0 1792 1792" src="/images/profiles/iconComment.png" data-toggle="modal" data-target="#commentsModal">
+                        </div>
+                    </div>
+                </div> {% csrf_token %}
             </div>
-        </div>
-    </section>
+            {% endfor %}
 
+        </div>
+    </div>
+    </section>
+</main>
     {% include 'pagination.html' with queryset=posts custom_range=custom_range %}
 
-</main>
+
+<div class="modal fade" id="commentsModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body-confirm">
+
+      </div>
+      <div class="modal-footer" >
+        <form class="form" id="comment-form"  method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="formInput#textarea">{{field.label}}</label>
+                {{field}}
+            </div>
+            {% endfor %}
+            <input class="btn btn--sub btn--lg" type="submit" value="Add Comment" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
+<script>
+
+const likesDiv = document.getElementById('numlikes')
+const likeBtns = [...document.getElementsByClassName('likeBtn')]
+const csrf = document.getElementsByName('csrfmiddlewaretoken')
+$(document).ready(function() {
+
+    likeBtns.forEach(likeBtn => {
+        const id = likeBtn.getAttribute('data-id')
+
+        likes(id,likeBtn)
+    });
+});
+
+ {#$("#like-form").submit(function (e) {#}
+        // preventing from page reload and default actions
+likeBtns.forEach(likeBtn=> likeBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const id = likeBtn.getAttribute('data-id')
+    {#const pm = modalBtn.getAttribute('data-pm')#}
+    {#var serializedData = $(this).serialize();#}
+    {#  data = {#}
+    {#    'csrfmiddlewaretoken': csrf[0].value,#}
+    {#    'id': id,#}
+    {##}
+    $.ajax({
+            type: 'GET',
+            url: `like/${id}/post`,
+            success: function(response){
+               likeBtn.classList.toggle("active");
+                likeBtn.classList.add("animated");
+                {#generateClones(likeBtn);#}
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+ }))
+const likes = (id,likeBtn) => {
+     $.ajax({
+         type: "GET",
+         url: `likes/${id}/post`,
+         success: function(response){
+             if (response['button']=='Like'){
+              likeBtn.classList.toggle("active");
+                likeBtn.classList.add("animated");
+                {#generateClones(likeBtn);#}
+             }
+            },
+            error: function(error){
+                console.log(error)
+            }
+     })
+}
+
+const textarea_body = document.getElementById('id_body')
+const modalBtns = [...document.getElementsByClassName('comment-button')]
+modalBtns.forEach(modalBtn=> modalBtn.addEventListener('click', ()=>{
+    const id = modalBtn.getAttribute('data-id')
+    textarea_body.rows=4
+
+    comments(id)
+$("#comment-form").submit(
+    function (e) {
+        e.preventDefault();
+        console.log(id)
+        var serializedData = $(this).serialize();
+        $.ajax({
+                type: 'POST',
+                url: `comment/${id}/post/`,
+                data: serializedData,
+                success: function(){
+                    {#comments(id)#}
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            }).done(function (){comments(id)});
+     }
+ )
+}))
+const comments = (id) => {
+     $.ajax({
+  type: "GET",
+  url: `comments/${id}/post`
+    }).done(function( responseMsg ) {
+      $('#modal-body-confirm').html(responseMsg)
+         textarea_body.value=''
+    });
+ }
+
+
+{# let button = document.querySelector(".like-button");#}
+{##}
+{#button.addEventListener("click", function(e) {#}
+{#  e.preventDefault();#}
+
+
+
+{##}
+{#function generateClones(button) {#}
+{#  let clones = randomInt(2, 4);#}
+{#  for (let it = 1; it <= clones; it++) {#}
+{#    let clone = button.querySelector("svg").cloneNode(true),#}
+{#      size = randomInt(5, 16);#}
+{#    button.appendChild(clone);#}
+{#    clone.setAttribute("width", size);#}
+{#    clone.setAttribute("height", size);#}
+{#    clone.style.position = "absolute";#}
+{#    clone.style.transition =#}
+{#      "transform 0.5s cubic-bezier(0.12, 0.74, 0.58, 0.99) 0.3s, opacity 1s ease-out .5s";#}
+{#    let animTimeout = setTimeout(function() {#}
+{#      clearTimeout(animTimeout);#}
+{#      clone.style.transform =#}
+{#        "translate3d(" +#}
+{#        (plusOrMinus() * randomInt(10, 25)) +#}
+{#        "px," +#}
+{#        (plusOrMinus() * randomInt(10, 25)) +#}
+{#        "px,0)";#}
+{#      clone.style.opacity = 0;#}
+{#    }, 1);#}
+{#    let removeNodeTimeout = setTimeout(function() {#}
+{#      clone.parentNode.removeChild(clone);#}
+{#      clearTimeout(removeNodeTimeout);#}
+{#    }, 900);#}
+{#    let removeClassTimeout = setTimeout( function() {#}
+{#      button.classList.remove("animated")#}
+{#    }, 600);#}
+{#  }#}
+
+
+{##}
+{#function plusOrMinus() {#}
+{#  return Math.random() < 0.5 ? -1 : 1;#}
+
+{##}
+{#function randomInt(min, max) {#}
+{#  return Math.floor(Math.random() * (max - min + 1) + min);#}
+
+</script>
 
 {% endblock %}

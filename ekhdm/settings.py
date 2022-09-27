@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'quizes.apps.QuizesConfig',
     'django_celery_beat',
 
-    'comments.apps.CommentsConfig',
+    'reacts.apps.ReactsConfig',
     # 'crispy_forms',
     'import_export',
     'django_filters',

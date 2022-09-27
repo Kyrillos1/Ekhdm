@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django.forms import ModelForm, widgets
 from django import forms
 from .models import *
-from comments.models import Comment
+from reacts.models import Comment
 
 # from crispy_forms.helper import FormHelper
 # from crispy_forms.layout import Layout, Field, Submit
@@ -14,22 +14,17 @@ class TaskForm(ModelForm):
         exclude = ['user']
         widgets = {
             'deadline': forms.DateInput(
-                # format=('%d/%m/%Y'),
-                attrs={'class': 'form-control',
-                       'placeholder': 'Select a date',
+                attrs={'placeholder': 'Select a date',
                        'type': 'datetime-local',  # <--- IF I REMOVE THIS LINE, THE INITIAL VALUE IS DISPLAYED
-                       })}
+                       }
+            )
+        }
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'input'})
-            if name=='deadline':
-                field.widget.attrs.update({'class': 'form-control'})
-
-            # print(name)
-
+            field.widget.attrs.update({'class': 'form-control'})
 
 class SubmitForm(ModelForm):
     class Meta:

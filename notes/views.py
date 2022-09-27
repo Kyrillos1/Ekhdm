@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 RANDOM_VARIABLE = settings.SOME_RANDOM_VARIABLE
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['MakhdomE3dad'])
+@allowed_users(allowed_roles=['اسرة اعداد خدام - مخدومين'])
 def note(request):
     user = request.user.profile
     last_week = Week.objects.first()

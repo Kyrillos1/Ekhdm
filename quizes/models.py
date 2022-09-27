@@ -2,12 +2,42 @@ from django.db import models
 import uuid
 
 from django.db.models.deletion import CASCADE
-from users.models import Profile
+from users.models import Profile ,Level
 # Create your models here.
 
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models.deletion import CASCADE
+from django.utils.translation import gettext_lazy as _
+
+
+
+# class CategoryManager(models.Manager):
+#
+#     def new_category(self, category):
+#         new_category = self.create(category=re.sub('\s+', '-', category)
+#                                    .lower())
+#
+#         new_category.save()
+#         return new_category
+#
+# # @python_2_unicode_compatible
+# class Category(models.Model):
+#
+#     category = models.CharField(
+#         verbose_name=_("Category"),
+#         max_length=250, blank=True,
+#         unique=True, null=True)
+#
+#     objects = CategoryManager()
+#
+#     class Meta:
+#         verbose_name = _("Category")
+#         verbose_name_plural = _("Categories")
+#
+#     def __str__(self):
+#         return self.category
+
 
 
 # from users.models import Profile
@@ -19,7 +49,8 @@ QUIZTYPE = (
 class Quiz(models.Model):
     user = models.ForeignKey(
         Profile, null=True, blank=True, on_delete=models.CASCADE)
-
+    level = models.ForeignKey(
+        Level, null=True, blank=True, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=QUIZTYPE, null=True, blank=True)
     title = models.CharField(max_length=120, blank=True, null=True)
     date = models.DateTimeField(null=True, blank=True, editable=True)
@@ -75,7 +106,6 @@ class Question(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
-
     @property
     def QuestionURL(self):
         try:

@@ -46,7 +46,7 @@
     <!-- Search Result: DevList -->
     <section class="tasksList">
 <br>
-{% if request.user.groups.all.0.name == 'KhadmE3dad'%}
+{% if request.user.groups.all.0.name == 'اسرة اعداد خدام'%}
        <div class="container">
         <div class="settings grid ">
 {#          <h3 class="settings__title align-items-center">Last Tasks</h3>#}
@@ -76,10 +76,10 @@
                         <td title="{{ task.desc}}">{{ task.desc|truncatechars:120 }}</td>
                         <td>{{ task.deadline }}</td>
                         <td>
-                        {% if request.user.groups.all.0.name == 'MakhdomE3dad' %}
+                        {% if request.user.groups.all.0.name == 'اسرة اعداد خدام - مخدومين' %}
                             <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'submit-task' task.id %}"><i
                             class="im im-plus"></i> Submit</a>
-                        {% elif request.user.groups.all.0.name == 'KhadmE3dad' %}
+                        {% elif request.user.groups.all.0.name == 'اسرة اعداد خدام' %}
                             <div class="dropdown">
                                 <span>submits</span>
                                 <div class="dropdown-content">

@@ -14,17 +14,38 @@
                 {% csrf_token %}
 
                 {% for field in form %}
-                <!-- Input:Text -->
-                <div class="form__field">
-                    <label for="formInput#text">{{field.label}}</label>
-                    {{field}}
-                </div>
+                    {% if field.name == 'level' %}
+                    {% else %}
+                        <div class="form__field">
+                            <label for="formInput#text">{{field.label}}</label>
+                            {{field}}
+                        </div>
+                    {% endif %}
                 {% endfor %}
+                <label for="formInput#text" id="id_level_label">Level</label>
+                <select name="level" class="form-control" id="id_level">
+                  <option value="" selected="">---------</option>
+                {% for level in request.user.profile.levels.all %}
+                  <option value="{{ level.id }}">{{ level.name }}</option>
+                {% endfor %}
+                </select>
                 <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
             </form>
         </div>
     </div>
 </main>
 
+<script>
+$("#id_public").change(function() {
+        selectedVal = $("#id_public option:selected").val();
+        if(selectedVal=='true'){
+            $("#id_level").hide()
+            $("#id_level_label").hide()
+        }else{
+            $("#id_level").show()
+            $("#id_level_label").show()
 
+        }
+	});
+</script>
 {% endblock %}

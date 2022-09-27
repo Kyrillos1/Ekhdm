@@ -42,9 +42,13 @@ def searchTasks(request):
     # tags = Tag.objects.filter(name__icontains=search_query)
 
     tasks = Task.objects.distinct().filter(
-        Q(desc__icontains=search_query) |
-        Q(subject__icontains=search_query) |
-        Q(deadline__icontains=search_query) |
-        Q(user__name__icontains=search_query)
+        Q(level__in=request.user.profile.get_levels()) &
+        (
+                Q(desc__icontains=search_query) |
+                Q(subject__icontains=search_query) |
+                Q(deadline__icontains=search_query) |
+                Q(user__name__icontains=search_query)
+        )
+
     )
     return tasks, search_query

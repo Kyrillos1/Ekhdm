@@ -53,9 +53,9 @@
               </thead>
               <tbody>
               {% for book in books %}
-{#          {% if makhdom.user.groups.all.0.name == 'MakhdomE3dad' %}#}
+{#          {% if makhdom.user.groups.all.0.name == 'اسرة اعداد خدام - مخدومين' %}#}
                       <tr class='clickable-row'>
-                  <td>{{book.name}}</td>
+                  <td><a href="{% url 'book' book.id %}">{{book.name}}</a></td>
                   <td>{{book.writer}}</td>
                   <td>
                       <span class="tag tag--pill tag--main">

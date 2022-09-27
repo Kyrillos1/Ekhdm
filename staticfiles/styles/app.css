@@ -510,7 +510,7 @@ img {
 /*========== Demomethods ==========*/
 
 .demomethod__thumbnail {
-  height: 25rem;
+  height: 75rem;
   object-fit: cover;
   object-position: top center;
 }

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from weeks.models import *
 from notes.models import *
 
+
 def paginateProfiles(request, profiles, results):
     page = request.GET.get('page')
     paginator = Paginator(profiles, results)
@@ -86,15 +87,16 @@ def searchMakhdomen(request):
         search_query = request.GET.get('search_query')
 
     makhdomen = Profile.objects.filter(
-        Q(user__groups__name='MakhdomE3dad')&
+        # Q(user__groups__name='اسرة اعداد خدام - مخدومين') &
+        Q(user__roles=13) &
+        # Q(levels__in=request.user.profile.get_levels()) &
         (
-            Q(name__icontains=search_query) |
-            Q(email__icontains=search_query) |
-            Q(username__icontains=search_query) |
-            Q(social_facebook__icontains=search_query) |
-            Q(job__icontains=search_query)
+                Q(name__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(name__icontains=search_query) |
+                Q(social_facebook__icontains=search_query) |
+                Q(job__icontains=search_query)
         )
     )
-
 
     return makhdomen, search_query

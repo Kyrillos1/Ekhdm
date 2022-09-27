@@ -14,6 +14,6 @@ class PostImportExport(ImportExportModelAdmin):
 @admin.register(Church)
 class PostImportExport(ImportExportModelAdmin):
     pass
-@admin.register(Family)
+@admin.register(Level)
 class PostImportExport(ImportExportModelAdmin):
     pass

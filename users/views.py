@@ -223,7 +223,7 @@ def createMessage(request, pk):
 RANDOM_VARIABLE = settings.SOME_RANDOM_VARIABLE
 
 
-# @allowed_users(allowed_roles=['KhadmE3dad'])
+# @allowed_users(allowed_roles=['اسرة اعداد خدام'])
 def makhdomenList(request,quizId):
     makhdomen, search_query = searchMakhdomen(request)
     custom_range, makhdomen = paginateMakhdomen(request, makhdomen, 6)

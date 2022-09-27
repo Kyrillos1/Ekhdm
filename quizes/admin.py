@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import *
-from comments.models import Comment
+from reacts.models import Comment
 from import_export.admin import ImportExportModelAdmin
 
 
@@ -20,3 +20,9 @@ class PostImportExport(ImportExportModelAdmin):
 @admin.register(UserAns)
 class PostImportExport(ImportExportModelAdmin):
     pass
+# @admin.register(CategoryManager)
+# class PostImportExport(ImportExportModelAdmin):
+#     pass
+# @admin.register(Category)
+# class PostImportExport(ImportExportModelAdmin):
+#     pass

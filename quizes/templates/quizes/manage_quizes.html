@@ -17,16 +17,10 @@
   max-height: 400px;
   overflow-x: hidden;
 }
-
 .dropdown:hover .dropdown-content {
     display: block;
 }
-
-
-
-
 </style>
-
 <!-- Main Section -->
 <main class="quizes">
     <section class="hero-section text-center">
@@ -34,7 +28,6 @@
             <div class="hero-section__box">
                 <h2>Search for <span>Quizes</span></h2>
             </div>
-
             <div class="hero-section__search">
                 <form id='searchForm' class="form" action="{% url 'manage-quizes' %}" method="get">
                     <div class="form__field">
@@ -48,11 +41,10 @@
             </div>
         </div>
     </section>
-
     <!-- Search Result: DevList -->
     <section class="quizesList">
 <br>
-{% if request.user.groups.all.0.name == 'KhadmE3dad'%}
+{% if request.user.groups.all.0.name == 'اسرة اعداد خدام'%}
        <div class="container">
         <div class="settings grid ">
 {#          <h3 class="settings__title align-items-center">Last Tasks</h3>#}
@@ -61,7 +53,6 @@
         </div>
     </div>
 {% endif %}
-
 <br>
         <div class="container">
             <table class="table table-hover">
@@ -146,7 +137,7 @@
                             </div>
                         </td>
                     </tr>
- <tr class=''>
+                    <tr class=''>
                         <td colspan=75%>
                             <div class="dropdown">
                                 <span>Click to see Admitors</span>
@@ -196,22 +187,10 @@
         </div>
     </section>
     {% include 'pagination.html' with queryset=quizes custom_range=custom_range %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+{#{% if  'اسرة اعداد خدام - مخدومين' == group.name for group in  request.user.groups.all.name%}#}
+    {{ request.user.groups.all}}
+{#{% endif %}#}
+{#{{ request.user.groups.all}}#}
 </main>
     <script>
 const modalBtns = [...document.getElementsByClassName('questions-button')]

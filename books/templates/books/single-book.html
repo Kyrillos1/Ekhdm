@@ -48,7 +48,7 @@
 
 
                     {% if request.user.is_authenticated %}
-                    <form class="form" action="{% url 'book' book.id %}" method="POST">
+                    <form id="comment-form" class="form" action="{% url 'book' book.id %}" method="POST">
                         {% csrf_token %}
                         {% for field in form %}
                         <div class="form__field">
@@ -56,28 +56,14 @@
                             {{field}}
                         </div>
                         {% endfor %}
+{#                        <input class="btn btn--sub btn--lg" type="hidden" name="model" value="book" />#}
                         <input class="btn btn--sub btn--lg" type="submit" value="Add Comment" />
                     </form>
                     {% else %}
                     <a href="{% url 'login' %}?next={{request.path}}">Please login to leave a comment</a>
                     {% endif %}
 
-                    <div class="commentList">
-                        {% for comment in book.comment_set.all %}
-                        {% if comment.body %}
-                        <div class="comment">
-                            <a href="{% url 'user-profile' comment.user.id  %}">
-                                <img class="avatar avatar--md" src="{{comment.user.profile_image.url}}" alt="user" />
-                            </a>
-                            <div class="comment__details">
-                                <a href="{% url 'user-profile' comment.user.id  %}"
-                                    class="comment__author">{{comment.user.name}}</a>
-                                <p class="comment__info">{{comment.desc|linebreaksbr}}</p>
-                                <p class="comment__info">{{comment.created|linebreaksbr}}</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
+                    <div class="commentList" id="comments">
 
                     </div>
                 </div>
@@ -86,5 +72,35 @@
     </div>
     </div>
 </main>
+<script>
+$(document).ready(function() { comments() });
+ const commentsDiv = document.getElementById('comments')
+ const textarea_body = document.getElementById('id_body')
+ $("#comment-form").submit(function (e) {
+        // preventing from page reload and default actions
+    e.preventDefault();
+    var serializedData = $(this).serialize();
+    $.ajax({
+            type: 'POST',
+            url: `{% url 'comment' book.id 'book' %}`,
 
+            data: serializedData,
+            success: function(){
+                comments()
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+ })
+ const comments = () => {
+     $.ajax({
+  type: "GET",
+  url: "{% url 'comments' book.id 'book' %}"
+    }).done(function( responseMsg ) {
+      $('#comments').html(responseMsg)
+         textarea_body.value=''
+    });
+ }
+</script>
 {% endblock %}

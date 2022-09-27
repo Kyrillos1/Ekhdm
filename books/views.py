@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Book
 from .forms import BookForm
-from comments.forms import CommentForm
+from reacts.forms import CommentForm
 from .utils import searchBooks, paginateBooks
 from django.contrib.auth.decorators import login_required
 
@@ -23,15 +23,15 @@ def book(request, pk):
     bookObj = Book.objects.get(id=pk)
     form = CommentForm()
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        comment = form.save(commit=False)
-        comment.book = bookObj
-        comment.user = request.user.profile
-        comment.save()
-
-        messages.success(request, 'Your comment was successfully submitted!')
-        return redirect('book', pk=bookObj.id)
+    # if request.method == 'POST':
+    #     form = CommentForm(request.POST)
+    #     comment = form.save(commit=False)
+    #     comment.book = bookObj
+    #     comment.user = request.user.profile
+    #     comment.save()
+    #
+    #     messages.success(request, 'Your comment was successfully submitted!')
+    #     return redirect('book', pk=bookObj.id)
 
     return render(request, 'books/single-book.html', {'book': bookObj,'form': form})
 

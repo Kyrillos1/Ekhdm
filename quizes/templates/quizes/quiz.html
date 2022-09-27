@@ -105,7 +105,7 @@ label.radio input:checked + span {
                                             {% endwith %}
                                         {% elif question.type == 'written' %}
                                             <label for="formInput#text">Answer</label>
-                                            <textarea class="input ansWritten" name="answer" id="textarea" data-id="{{ question.id }}" placeholder="PUT THE ANSWER HERE"></textarea>
+                                            <textarea class="input ansWritten" name="answer" id="textarea" data-id="{{ question.id }}" placeholder="PUT THE ANSWER HERE" rows="10"></textarea>
                                         {% endif %}
                                         <a href="{% url 'main_view' %}" class="btn btn-success"   id="finish" style="float:right;display: none;" >Finsh</a>
 {#                                     <div  class="d-flex flex-row-reverse  align-items-center " >#}
@@ -120,30 +120,34 @@ label.radio input:checked + span {
                     </div>
                 </form>
         </div>
-
-
 {% include 'pagination.html' with queryset=questions custom_range=custom_range %}
+
+{% if userAnswer%}
+    {% if questions.0.type == 'written' %}
+        <div  id="helperDivForLinebreaksProblem" >
+        {{ userAnswer|linebreaksbr }}
+        </div>
+    {% endif %}
+{% endif %}
+
 </main>
 <script>
-{#print answers if there#}
+
 const answerMcqs = [...document.getElementsByClassName('answerMcq')]
-    {% if userAnswer%}
-    {% if questions.0.type == 'mcq' %}
-        {% for ans in userAnswer|trim:"[,]'"|split:"', '" %}
+{% if userAnswer%}
+{% if questions.0.type == 'mcq' %}
+            {% for ans in userAnswer|trim:"[,]'"|split:"', '" %}
             answerMcqs.forEach(answerMcq=> {
                 if(answerMcq.value == '{{ ans }}'){
                    answerMcq.click()
                 }
             })
         {% endfor %}
-    {% elif questions.0.type == 'written' %}
-        document.getElementById("textarea").value = '{{ userAnswer|trim:"[,]'" }}'
-    {% endif %}
-    {% endif %}
+{% elif questions.0.type == 'written' %}
+    document.getElementById("textarea").value = document.getElementById("helperDivForLinebreaksProblem").innerText
 
-
-
-
+{% endif %}
+{% endif %}
 
 const url = window.location.href
 
@@ -439,5 +443,6 @@ const csrf = document.getElementsByName('csrfmiddlewaretoken')
 {#    })#}
 
 console.log('hello world quiz')
+{#document.getElementById("helperDivForLinebreaksProblem").style.display = "none";#}
 </script>
 {% endblock %}

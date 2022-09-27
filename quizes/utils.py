@@ -41,16 +41,17 @@ def searchQuizes(request):
         result = Result.objects.get(user=request.user.profile)
     except Result.DoesNotExist:
         result = None
-
-
     quizes = Quiz.objects.distinct().filter(
-        Q(user__name__icontains=search_query) |
-        Q(title__icontains=search_query) |
-        Q(date__icontains=search_query) |
-        Q(desc__icontains=search_query) |
-        Q(number_of_questions__icontains=search_query
-          )
+        Q(level__in=request.user.profile.get_levels())&
+        (
+            Q(user__name__icontains=search_query) |
+            Q(title__icontains=search_query) |
+            Q(date__icontains=search_query) |
+            Q(desc__icontains=search_query) |
+            Q(number_of_questions__icontains=search_query)
+        )
     )
+
     return quizes, result, search_query
 
 #

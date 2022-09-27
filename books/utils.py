@@ -42,10 +42,17 @@ def searchBooks(request):
     # tags = Tag.objects.filter(name__icontains=search_query)
 
     books = Book.objects.distinct().filter(
-        Q(name__icontains=search_query) |
-        Q(writer__icontains=search_query) |
-        Q(type__icontains=search_query) |
-        Q(desc__icontains=search_query) |
-        Q(user__name__icontains=search_query)
+
+        (
+                Q(public=True) |
+                Q(level__in=request.user.profile.get_levels())
+        ) &
+        (
+                Q(name__icontains=search_query) |
+                Q(writer__icontains=search_query) |
+                Q(type__icontains=search_query) |
+                Q(desc__icontains=search_query) |
+                Q(user__name__icontains=search_query)
+        )
     )
     return books, search_query

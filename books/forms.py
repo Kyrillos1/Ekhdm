@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django.forms import ModelForm, widgets
 from django import forms
 from .models import Book
-from comments.models import Comment
+from reacts.models import Comment
 
 class BookForm(ModelForm):
     class Meta:
@@ -14,4 +14,4 @@ class BookForm(ModelForm):
         super(BookForm, self).__init__(*args, **kwargs)
 
         for name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'input'})
+            field.widget.attrs.update({'class': 'form-control'})

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('comments', '0002_save_like'),
+        ('reacts', '0002_save_like'),
     ]
 
     operations = [

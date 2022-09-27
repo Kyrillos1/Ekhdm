@@ -16,6 +16,7 @@ urlpatterns = [
     path('books/', include('books.urls')),
     path('tasks/', include('tasks.urls')),
     path('note/', include('notes.urls')),
+    path('', include('reacts.urls')),
 
     path('user/', include('users.urls')),
     path('api/', include('api.urls')),

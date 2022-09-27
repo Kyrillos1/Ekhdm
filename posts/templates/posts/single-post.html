@@ -32,6 +32,13 @@
 {#                {% endif %}#}
 
             </div>
+{#        <div class="card-header">#}
+                        <a style="text-decoration: none;" href="{% url 'user-profile' post.user.id  %}">
+                            <img class="avatar avatar--sm" src="{{post.user.profile_image.url}}" alt="user" />
+                            <span style="padding-left: 4px;font-weight: bold">{{post.user}}</span>
+                        </a>
+
+{#                    </div>#}
             <div class="column column--2of3">
                 <img class="singlePost__preview" src="{{ post.imageURL }}" alt="portfolio thumbnail" />
                 <a href="{% url 'user-profile' post.user.id  %}"
@@ -51,7 +58,7 @@
                     </h5>
 
                     {% if request.user.is_authenticated %}
-                    <form class="form" action="{% url 'post' post.id %}" method="POST">
+                    <form class="form" id="comment-form"  method="POST">
                         {% csrf_token %}
                         {% for field in form %}
                         <div class="form__field">
@@ -66,22 +73,22 @@
                     <a href="{% url 'login' %}?next={{request.path}}">Please login to leave a comment</a>
                     {% endif %}
 
-                    <div class="commentList">
-                        {% for comment in post.comment_set.all %}
-                        {% if comment.body %}
-                        <div class="comment">
-                            <a href="{% url 'user-profile' comment.user.id  %}">
-                                <img class="avatar avatar--md" src="{{comment.user.profile_image.url}}" alt="user" />
-                            </a>
-                            <div class="comment__details">
-                                <a href="{% url 'user-profile' comment.user.id %}"
-                                    class="comment__author">{{comment.user.name}}</a>
-                                <p class="comment__info">{{comment.body|linebreaksbr}}</p>
-                                <p class="comment__info">{{comment.created}}</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
+                    <div class="commentList" id="comments">
+{#                        {% for comment in post.comment_set.all %}#}
+{#                        {% if comment.body %}#}
+{#                        <div class="comment">#}
+{#                            <a href="{% url 'user-profile' comment.user.id  %}">#}
+{#                                <img class="avatar avatar--md" src="{{comment.user.profile_image.url}}" alt="user" />#}
+{#                            </a>#}
+{#                            <div class="comment__details">#}
+{#                                <a href="{% url 'user-profile' comment.user.id %}"#}
+{#                                    class="comment__author">{{comment.user.name}}</a>#}
+{#                                <p class="comment__info">{{comment.body|linebreaksbr}}</p>#}
+{#                                <p class="comment__info">{{comment.created}}</p>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        {% endif %}#}
+{#                        {% endfor %}#}
 
                     </div>
 
@@ -92,4 +99,35 @@
     </div>
 </main>
 
+<script>
+$(document).ready(function() { comments() });
+ const commentsDiv = document.getElementById('comments')
+ const textarea_body = document.getElementById('id_body')
+ $("#comment-form").submit(function (e) {
+        // preventing from page reload and default actions
+    e.preventDefault();
+    var serializedData = $(this).serialize();
+    $.ajax({
+            type: 'POST',
+            url: `{% url 'comment' post.id 'post' %}`,
+
+            data: serializedData,
+            success: function(){
+                comments()
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+ })
+ const comments = () => {
+     $.ajax({
+  type: "GET",
+  url: "{% url 'comments' post.id 'post' %}"
+    }).done(function( responseMsg ) {
+      $('#comments').html(responseMsg)
+         textarea_body.value=''
+    });
+ }
+</script>
 {% endblock %}
