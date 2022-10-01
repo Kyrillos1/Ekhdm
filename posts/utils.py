@@ -41,8 +41,8 @@ def searchPosts(request):
 
     posts = Post.objects.distinct().filter(
         (
-                Q(public=True) |
-                Q(level__in=request.user.profile.get_levels())
+                Q(public=True)
+                # Q(level__in=request.user.profile.get_levels())
         ) &
         (
                 Q(body__icontains=search_query) |

@@ -1,8 +1,15 @@
 from django import template
+from lessons.models import LessonType
 import random
 
 register = template.Library()
 
+@register.filter(name='types')
+def types(value,key):
+    if value is None:
+        value = ' '
+    lessons = LessonType.objects.all().exclude(id=key)
+    return lessons
 
 @register.filter(name='times')
 def times(number):

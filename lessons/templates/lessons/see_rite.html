@@ -1,0 +1,115 @@
+{#{% extends "lessons/base.html" %}#}
+{##}
+{#{% block start %}#}
+{% extends 'main.html' %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="lessons">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Lessons</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'lessons' lessonType.id %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Lessons </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Lesson Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Result: DevList -->
+    <section class="lessonsList">
+    <div class="container">
+        <br>
+        <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Lessons</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-lesson' lessonType.id %}"><i
+              class="im im-plus"></i> Add Lesson</a>
+        </div>
+        <br>
+    </div>
+
+        <div class="container">
+            <div class="grid ">
+<table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Lesson title</th>
+            <th scope="col">Created at</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for lesson in Lessons %}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{lesson.title}}</td>
+            <td>{{lesson.created_at}}</td>
+            <td>
+                <a href="{%  url 'lesson_update' lesson.slug %}" class="btn btn-success">Update</a>
+                <a href="{% url 'lesson_delete' lesson.id %}" class="btn btn-danger">Delete</a>
+
+
+            </td>
+          </tr>
+          {% endfor %}
+         
+
+          </tbody>
+            </table>
+{#                {% for lesson in lessons %}#}
+{#                <div class="column ">#}
+{#                    <div class="card lesson">#}
+{#                           <a href="{% url 'lesson' lesson.id %}" class="lesson ">#}
+{##}
+{#                            <div class="card__body">#}
+{#                                <h3 class="lesson__title">{{lesson.name}}</h3>#}
+{#                                <p>By {{lesson.wlessonr}}#}
+{#                                </p>#}
+{#                                <span class="tag tag--pill tag--main">#}
+{#                                        <small>{{lesson.type}}</small>#}
+{#                                    </span>#}
+{#                                <p class="lesson--rating">#}
+{#                                    {{lesson.desc|linebreaksbr}}#}
+{#                                </p>#}
+{#                                <p class="lesson--rating">#}
+{#                                    Added by {{lesson.user.name}}#}
+{#                                </p>#}
+{##}
+{#                            </div>#}
+{#                        </a>#}
+{#                        {% if lesson.user.id == request.user.profile.id %}#}
+{#                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-lesson' lesson.id %}?next=/account">#}
+{#                                <i class="im im-x-mark-circle-o"></i>#}
+{#                                Delete#}
+{#                            </a>#}
+{#                            <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-lesson' lesson.id %}"><i#}
+{#                                                  class="im im-edit"></i> Edit</a>#}
+{#                        {% endif %}#}
+{##}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#                {% endfor %}#}
+
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=lessons custom_range=custom_range %}
+
+</main>
+
+
+
+{% endblock %}

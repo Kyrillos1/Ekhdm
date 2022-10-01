@@ -56,7 +56,10 @@ INSTALLED_APPS = [
     'books.apps.BooksConfig',
     'tasks.apps.TasksConfig',
     'notes.apps.NotesConfig',
-
+    # 'rites.apps.RitesConfig',
+    'lessons.apps.LessonsConfig',
+    # 'ckeditor',
+    'froala_editor',
     'weeks.apps.WeeksConfig',
 
     'quizes.apps.QuizesConfig',
@@ -203,10 +206,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangodemomethod.com/en/3.2/topics/i18n/
-
+# FROALA_EDITOR_PLUGINS = ('align', 'char_counter', 'code_beautifier' ,'code_view', 'colors', 'draggable', 'emoticons',
+#           'entities', 'file', 'font_family', 'font_size', 'fullscreen', 'image_manager', 'image', 'inline_style',
+#           'line_breaker', 'link', 'lists', 'paragraph_format', 'paragraph_style', 'quick_insert', 'quote', 'save', 'table',
+#           'url', 'video')
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Cairo'
 
 USE_I18N = True
 

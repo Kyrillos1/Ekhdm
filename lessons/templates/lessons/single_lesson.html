@@ -1,0 +1,59 @@
+{#{% extends "lessons/base.html" %}#}
+{##}
+{#{% block start %}#}
+
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="singleLesson my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+{#                <h3 class="singleLesson__subtitle">Tools & Stacks</h3>#}
+{#                <div class="singleLesson__toolStack">#}
+{#                    {% for tag in lesson.tags.all %}#}
+{#                    <span class="tag tag--pill tag--sub tag--lg">#}
+{#                        <small>{{tag}}</small>#}
+{#                    </span>#}
+{#                    {% endfor %}#}
+{##}
+{#                </div>#}
+
+{#                {% if lesson.source_link %}#}
+{#                <a class="singleLesson__liveLink" href="{{lesson.source_link}}" target="_blank"><i#}
+{#                        class="im im-external-link"></i>Source#}
+{#                    Code#}
+{#                </a>#}
+{#                {% endif %}#}
+
+{#                {% if lesson.demo_link %}#}
+{#                <a class="singleLesson__liveLink" href="{{lesson.source_link}}" target="_blank"><i#}
+{#                        class="im im-external-link"></i>Live Demo#}
+{##}
+{#                </a>#}
+{#                {% endif %}#}
+
+            </div>
+            <div class="column column--2of3">
+       
+        <div class="row text-center">
+            <div class="col-xl-10 mx-auto"><img class="img-fluid mb-5"
+                    src="/media/{{lesson.image}}"
+                    alt=""></div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 col-lg-10 ">
+                <div class="text-content">
+                    {{lesson.content|safe}}
+                </div>
+            </div>
+        </div>
+            </div>
+            </div>
+            </div>
+
+        </div>
+</section>
+</main>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{#{% extends "lessons/base.html" %}#}
+{##}
+{#{% block start %}#}
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+
+{#    <a href="{% url 'see_lesson' %}" class="btn btn-warning">View Your lessons</a>#}
+{##}
+{#    <form method="post" class="mt-5 pt-5 mb-5 pb-5"#}
+{#          enctype="multipart/form-data" action="{% url 'create_lesson' %}">#}
+{#        {% csrf_token %}#}
+{#        <div class="row">#}
+{#            <div class="col-md-12">#}
+{#                <label>Enter lesson title</label>#}
+{#                <input type="text" class="form-control" placeholder="Enter title" name="title">#}
+{#            </div>#}
+{##}
+{#            <div class="form__field">#}
+{#                {{form.media}}#}
+{#                {{form.as_p}}#}
+{#            </div>#}
+{##}
+{#            <div class="form__field">#}
+{#                <input type="file" name="image" class="form-control" >#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{##}
+{#        <button type="submit" class="btn btn-primary mt-4">Create Lesson</button>#}
+{##}
+{#    </form>#}
+<form class="form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form__field">
+        <label for="formInput#text">Enter lesson title</label>
+        <input type="text" class="form-control" placeholder="Enter title" name="title">
+    </div>
+    {{form.media}}
+    {% for field in form %}
+        {% if field.name == 'level' %}
+        {% elif field.name == 'content' %}
+                <div class="form__field">
+                    <label for="id_{{field.name}}">{{field.label}}</label>
+                    {{field}}
+                </div>
+        {% else %}
+            <div class="form__field">
+                <label for="id_{{field.name}}">{{field.label}}</label>
+                {{field}}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <label for="id_level" id="id_level_label">Level</label>
+    <select name="level" class="form-control" id="id_level">
+      <option value="" selected="">---------</option>
+    {% for level in request.user.profile.levels.all %}
+      <option value="{{ level.id }}">{{ level.name }}</option>
+    {% endfor %}
+    </select>
+    <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+</form>
+
+</div>
+<!-- Include Editor JS files. -->
+{#<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0//js/froala_editor.pkgd.min.js"></script>#}
+{#// Include the file plugin.#}
+{#<script src="../../js/plugins/file.min.js"></script>#}
+
+
+
+{% endblock %}

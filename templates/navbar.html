@@ -17,11 +17,26 @@
             <ul class="header__menu">
 {#                <li class="header__menuItem"><a href="{% url 'profiles' %}">Developers</a></li>#}
 
+{#                    <li class="header__menuItem"><a href="{% url 'lessons' %}"></a></li>#}
 
+{#                    <li class="header__menuItem"><a href="{% url 'rites' %}">طقس</a></li>#}
                 {% if request.user.is_authenticated %}
 
                     <li class="header__menuItem"><a href="{% url 'demomethods' %}">وسائل الايضاح</a></li>
                     <li class="header__menuItem"><a href="{% url 'books' %}">Books</a></li>
+
+
+                    <li class="header__menuItem dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          كنيستنا
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {% for lessonType in a|types:1 %}
+                                <li><a class="dropdown-item" href="{% url 'lessons' lessonType.id%}">{{ lessonType }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+
 
                     {% for group in request.user.groups.all %}
                     <li class="header__menuItem dropdown">
@@ -45,7 +60,6 @@
                       </ul>
                     </li>
                     {% endfor %}
-
 
                     <li class="header__menuItem"><a href="{% url 'inbox' %}">Inbox</a></li>
                     <li class="header__menuItem"><a href="{% url 'account' %}">Account</a></li>

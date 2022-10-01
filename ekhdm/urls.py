@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.contrib.auth import views as auth_views
+from froala_editor import views
 
 
 urlpatterns = [
@@ -17,6 +18,8 @@ urlpatterns = [
     path('tasks/', include('tasks.urls')),
     path('note/', include('notes.urls')),
     path('', include('reacts.urls')),
+    #path('rites/', include('rites.urls')),
+    path('lessons/', include('lessons.urls')),
 
     path('user/', include('users.urls')),
     path('api/', include('api.urls')),
@@ -32,6 +35,8 @@ urlpatterns = [
 
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="reset_password_complete.html"),
          name="password_reset_complete"),
+
+    path('froala_editor/',include('froala_editor.urls'))
 ]
 
 

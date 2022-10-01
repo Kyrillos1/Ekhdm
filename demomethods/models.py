@@ -16,8 +16,6 @@ class Demomethod(models.Model):
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
     source_link = models.CharField(max_length=2000, null=True, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
-    vote_total = models.IntegerField(default=0, null=True, blank=True)
-    vote_ratio = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
@@ -26,7 +24,7 @@ class Demomethod(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-vote_ratio', '-vote_total', 'title']
+        ordering = ['title']
 
     @property
     def imageURL(self):
@@ -36,22 +34,22 @@ class Demomethod(models.Model):
             url = ''
         return url
 
-    @property
-    def reviewers(self):
-        queryset = self.review_set.all().values_list('owner__id', flat=True)
-        return queryset
-
-    @property
-    def getVoteCount(self):
-        reviews = self.review_set.all()
-        upVotes = reviews.filter(value='up').count()
-        totalVotes = reviews.count()
-
-        ratio = (upVotes / totalVotes) * 100
-        self.vote_total = totalVotes
-        self.vote_ratio = ratio
-
-        self.save()
+    # @property
+    # def reviewers(self):
+    #     queryset = self.review_set.all().values_list('owner__id', flat=True)
+    #     return queryset
+    #
+    # @property
+    # def getVoteCount(self):
+    #     reviews = self.review_set.all()
+    #     upVotes = reviews.filter(value='up').count()
+    #     totalVotes = reviews.count()
+    #
+    #     ratio = (upVotes / totalVotes) * 100
+    #     self.vote_total = totalVotes
+    #     self.vote_ratio = ratio
+    #
+    #     self.save()
 
 
 class Review(models.Model):

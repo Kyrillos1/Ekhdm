@@ -42,7 +42,7 @@ def searchQuizes(request):
     except Result.DoesNotExist:
         result = None
     quizes = Quiz.objects.distinct().filter(
-        Q(level__in=request.user.profile.get_levels())&
+        # Q(level__in=request.user.profile.get_levels())&
         (
             Q(user__name__icontains=search_query) |
             Q(title__icontains=search_query) |

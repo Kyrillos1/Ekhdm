@@ -1,0 +1,71 @@
+{#{% extends "lessons/base.html" %}#}
+{##}
+{#{% block start %}#}
+{% extends 'main.html' %}
+
+{% block content %}
+<!-- Main Section -->
+<main class="lessons">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>ابحث عن <span>دروس عن  {{ lessonType }}</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'lessons' lessonType.id %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By {{ lessonType }} </label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by {{ lessonType }} Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+
+  <section class="py-6">
+    <div class="container">
+      <div class="row mb-5">
+        <!-- lesson item-->
+      <div class="settings grid ">
+{#          <h3 class="settings__title align-items-center">Last Lessons</h3>#}
+          <a class="tag tag--pill tag--sub settings__btn tag--lg align-items-center" href="{% url 'create-lesson' lessonType.id%}"><i
+              class="im im-plus"></i> ضيف درس عن {{ lessonType }}</a>
+        </div>
+
+        {% for lesson in lessons %}
+        <div class="col-lg-4 col-sm-6 mb-4 hover-animate">
+          <div class="card shadow border-0 h-100">
+            <a href="{% url 'lesson' lessonType.id lesson.slug %}">
+              <img class="img-fluid card-img-top" src="{{lesson.imageURL}}" alt="..."/></a>
+            <div class="card-body">By <a class="text-uppercase text-muted text-sm letter-spacing-2" href="#">
+               {{lesson.user.name}} </a>
+              <h5 class="my-2"><a class="text-dark" href="{% url 'lesson' lessonType.id lesson.slug %}">
+               {{lesson.title}}          </a></h5>
+              <p class="text-gray-500 text-sm my-3"><i class="far fa-clock mr-2"></i>
+                {{lesson.created_at}}</p>
+              <!-- <p class="my-2 text-muted text-sm">
+                {{lesson.content|safe}}
+              </p>
+            -->
+              <a class="btn btn-link pl-0"href="{% url 'lesson' lessonType.id lesson.slug %}">Read more<i class="fa fa-long-arrow-alt-right ml-2"></i></a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      
+      
+      </div>
+      <!-- Pagination -->
+
+    {% include 'pagination.html' with queryset=lessons custom_range=custom_range %}
+    </div>
+  </section>
+  <!-- Footer-->
+
+</main>
+
+  {% endblock %}

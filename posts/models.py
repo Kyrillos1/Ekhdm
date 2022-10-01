@@ -11,7 +11,7 @@ class Post(models.Model):
     user = models.ForeignKey(
         Profile, null=True, blank=True, on_delete=models.CASCADE)
     body = models.TextField(blank=True, null=True)
-    profile_image = models.ImageField(
+    post_image = models.ImageField(
         null=True, blank=True, upload_to='profiles/', default="profiles/user-default.png")
     public = models.BooleanField(default=False, null=True)
     level = models.ForeignKey(
@@ -32,7 +32,7 @@ class Post(models.Model):
     @property
     def imageURL(self):
         try:
-            url = self.profile_image.url
+            url = self.post_image.url
         except:
             url = ''
         return url
